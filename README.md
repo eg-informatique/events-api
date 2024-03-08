@@ -48,6 +48,13 @@ sudo -u postgres psql
 # create database events_db;
 # create user admin with encrypted password 'StendeRmaten';
 # grant all on database events_db to admin;
+# \c
+
+sudo vi /etc/postgresql/14/main/pg_hba.conf
+
+---
+host    all             all             127.0.0.1/32            trust
+---
 
 ```
 
@@ -118,5 +125,7 @@ email VARCHAR(64)
 
 INSERT INTO test_user(id, name, email) VALUES (1, 'Jim', 'jim@vtn.ch');
 
+# start flask 
+# visit http://127.0.0.1:5000/test_users
 
 ```
