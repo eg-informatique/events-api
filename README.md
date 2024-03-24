@@ -13,9 +13,7 @@ vi .flaskenv
 
 ---
 FLASK_APP=events-app.py
-DEV_DB_URL='postgresql+psycopg2://admin:StendeRmqten@localhost:5423/events_db'
 FLASK_ENV=development
-FLASK_DEBUG=True
 ---
 
 flask run
@@ -50,6 +48,7 @@ sudo -u postgres psql
 # CREATE DATABASE events_db;
 # CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
 # GRANT ALL PRIVILEGES ON DATABASE events_db TO admin;
+# GRANT ALL PRIVILAGES ON ALL TABLES IN shema public TO admin;
 # \c
 
 sudo vi /etc/postgresql/14/main/pg_hba.conf
