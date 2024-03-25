@@ -5,6 +5,7 @@ import uuid
 
 from . import db
 from .models import TestUser
+from .models import Event
 
 @app.route('/')
 @app.route('/index')
@@ -18,3 +19,9 @@ def list_all_test_users():
     for user in users: response.append(user.toDict())
     return jsonify(response)
 
+@app.route('/events')
+def list_all_events():
+    events = Event.query.all()
+    response = []
+    for event in events : response.append(event.toDict())
+    return jsonify(response)
