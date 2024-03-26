@@ -10,7 +10,7 @@ migrate = Migrate()
 # CONFIF_MODE = os.getenv("CONFIG_MODE")
 CONFIG_MODE = 'development'
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
     
 app.config.from_object(config[CONFIG_MODE])
 

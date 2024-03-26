@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, String, Text, inspect
+from sqlalchemy import Column, Integer, DateTime, String, Text,inspect
 
 from . import db # from __init__.py
 

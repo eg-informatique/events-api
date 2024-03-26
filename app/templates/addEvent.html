@@ -1,0 +1,18 @@
+{% include "index.html"%}
+{% block main %}
+    <h1>Add an event</h1>
+    <form action="", method="POST">
+        <p>Title</p>
+        <input type="text" name="title" required/>
+        <p>Description</p>
+        <input type="text" name="description"/>
+        <p>Image_url</p>
+        <input type="text" name="img_url"/>
+        <p>Start date</p>
+        <input type="datetime-local" name="start_date" required/>
+        <p>End date</p>
+        <input type="datetime-local" name="end_date" required/>
+
+        <p><input type="submit" name="post" value="enter"></p>
+    </form>
+{% endblock %}
