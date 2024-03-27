@@ -1,6 +1,6 @@
 from app import app
 
-from flask import Flask, request, render_template, redirect,jsonify
+from flask import Flask, Response, request, render_template, redirect, jsonify, json
 import uuid
 
 from .models import *
@@ -18,18 +18,21 @@ def list_all_test_users():
     for user in users: response.append(user.toDict())
     return jsonify(response)
 
-@app.route('/events')
+@app.route('/event')
 def list_all_events():
     events = Event.query.all()
     response = []
     for event in events : response.append(event.toDict())
     return jsonify(response)
 
-@app.route('/add_event', methods=['GET', 'POST'])
-def post_event():
-    if request.method == 'GET':
-        return render_template('addEvent.html')
-    new_event = Event(title=request.form["title"], description=request.form["description"], img_url=request.form["img_url"], start_date=request.form["start_date"], end_date=request.form["end_date"])
+@app.post('/event')
+def add_event():
+    data = request.get_json()
+    new_event = Event(title=data["title"], 
+                      description=data["description"], 
+                      img_url=data["img_url"], 
+                      start_date=data["start_date"], 
+                      end_date=data["end_date"])
     db.session.add(new_event)
     db.session.commit()
-    return redirect('/events')
+    return Response({'success':True}), 200, {'ContentType':'application/json'} 
