@@ -1,0 +1,22 @@
+CREATE TABLE venue (
+    id uuid DEFAULT gen_random_uuid(),
+    name VARCHAR(64) NOT NULL,
+    url TEXT DEFAULT NULL,
+    adress VARCHAR(64) DEFAULT NULL,
+    zipcode VARCHAR(64) NOT NULL,
+    city VARCHAR(64) NOT NULL,  
+    country VARCHAR(64) NOT NULL,
+    PRIMARY KEY (id) 
+);
+
+CREATE TABLE event (
+    id uuid DEFAULT gen_random_uuid(),
+    title VARCHAR(256) NOT NULL,
+    description TEXT DEFAULT NULL,
+     img_url VARCHAR(256) DEFAULT NULL,  
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ NOT NULL,  
+    venue_id uuid NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (venue_id) REFERENCES venue (id)
+);

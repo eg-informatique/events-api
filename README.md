@@ -48,7 +48,7 @@ sudo -u postgres psql
 # CREATE DATABASE events_db;
 # CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
 # \c events_db;
-# GRANT insert, update, select ON ALL tables IN schema public TO admin;
+# GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 # SET timezone = 'posix/Europe/Zurich';
 
 sudo vi /etc/postgresql/14/main/pg_hba.conf

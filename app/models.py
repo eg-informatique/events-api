@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, String, Text,inspect
+from sqlalchemy import Column, Integer, DateTime, String, Text, ForeignKey,inspect
 
 from . import db # from __init__.py
 
@@ -32,9 +32,23 @@ class Event(db.Model):
     img_url = Column(String(256), nullable=True)
     start_date = Column(DateTime(timezone=True), nullable=False)
     end_date = Column(DateTime(timezone=True), nullable=False)
+    venue_id = Column(Integer, ForeignKey('venue.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
 
-    def __repr__(self):
-        return "<%r>" % self.email
+
+class Venue(db.Model):
+    __tablename__ = "venue"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    name = Column(String(64), nullable = False)
+    url = Column(Text, default=None)
+    adress = Column(String(64), nullable=False)
+    zipcode = Column(String(64), nullable=False)
+    city = Column(String(64), nullable=False)
+    country = Column(String(64), nullable=False)
+    events = db.relationship('Event', backref='venue')
+
+    def toDict(self):
+        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
