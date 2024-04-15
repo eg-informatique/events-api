@@ -9,14 +9,35 @@ CREATE TABLE venue (
     PRIMARY KEY (id) 
 );
 
+CREATE TABLE users (
+    id uuid DEFAULT gen_random_uuid(),
+    firstname VARCHAR(64) NOT NULL,
+    lastname VARCHAR(64) NOT NULL,
+    pseudo VARCHAR(16) DEFAULT NULL,
+    birthdate DATE NOT NULL,
+    email VARCHAR(64) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE event (
     id uuid DEFAULT gen_random_uuid(),
     title VARCHAR(256) NOT NULL,
-    description TEXT DEFAULT NULL,
-     img_url VARCHAR(256) DEFAULT NULL,  
+    img_url VARCHAR(256) DEFAULT NULL,  
     start_date TIMESTAMPTZ NOT NULL,
     end_date TIMESTAMPTZ NOT NULL,  
     venue_id uuid NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (venue_id) REFERENCES venue (id)
+);
+
+CREATE TABLE event_details (
+    id uuid DEFAULT gen_random_uuid(),
+    event uuid NOT NULL,
+    price INTEGER DEFAULT NULL,
+    attendes INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    organizer uuid NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (event) REFERENCES event (id),
+    FOREIGN KEY (organizer) REFERENCES users (id)
 );

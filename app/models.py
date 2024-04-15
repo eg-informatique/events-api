@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, String, Text, ForeignKey,inspect
+from sqlalchemy import Column, Integer, DateTime, Date, Boolean, String, Text, ForeignKey,inspect
 
 from . import db # from __init__.py
 
@@ -28,11 +28,11 @@ class Event(db.Model):
 
     id  = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     title = Column(String(256), nullable=False)
-    description = Column(Text, default=None)
     img_url = Column(String(256), nullable=True)
     start_date = Column(DateTime(timezone=True), nullable=False)
     end_date = Column(DateTime(timezone=True), nullable=False)
     venue_id = Column(Integer, ForeignKey('venue.id'))
+    event_details = db.relationship('EventDetails', backref="oneevent")
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
@@ -49,6 +49,33 @@ class Venue(db.Model):
     city = Column(String(64), nullable=False)
     country = Column(String(64), nullable=False)
     events = db.relationship('Event', backref='venue')
+
+    def toDict(self):
+        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+    
+class Users(db.Model):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    firstname = Column(String(64), nullable=False)
+    lastname = Column(String(64), nullable=False)
+    pseudo = Column(String(16), nullable=True, default=None)
+    birthdate = Column(Date, nullable=False)
+    email = Column(String(64), nullable=False)
+    event_details = db.relationship('EventDetails', backref='users')
+
+    def toDict(self):
+        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+
+class EventDetails(db.Model):
+    __tablename__ = "event_details"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    event = Column(Integer, ForeignKey('event.id'))
+    price = Column(Integer, nullable=True)
+    attendes = Column(Integer, nullable=False)
+    description = Column(Text, nullable=False)
+    organizer = Column(Integer, ForeignKey('users.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
