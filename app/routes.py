@@ -38,6 +38,7 @@ def add_event():
                       img_url=data["img_url"], 
                       start_date=data["start_date"], 
                       end_date=data["end_date"],
+                      # TODO: to be updated (see Event model)
                       venue_id=data["venue_id"])
     db.session.add(new_event)
     db.session.commit()
