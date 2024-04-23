@@ -36,10 +36,13 @@ def add_event():
     data = request.get_json()
     new_event = Event(title=data["title"],  
                       img_url=data["img_url"], 
-                      start_date=data["start_date"], 
-                      end_date=data["end_date"],
-                      # TODO: to be updated (see Event model)
-                      venue_id=data["venue_id"])
+                      start_datetime=data["start_datetime"], 
+                      end_datetime=data["end_datetime"],
+                      update=func.now(),
+                      venue=data["venue"])
+    
+    if len(Event.query.filter(Event.title == data["title"]).all()) > 0:
+        return Response({'Conficlt name raised : That event already exists'}), 409, {'ContentType':'application/json'}
     db.session.add(new_event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
@@ -59,8 +62,9 @@ def patch_event(id):
     event = Event.query.filter(Event.id == id).first_or_404()
     event.title = data["title"]
     event.img_url = data["img_url"]
-    event.start_date = data["start_date"]
-    event.end_date = data["end_date"]
+    event.start_datetime = data["start_datetime"]
+    event.end_datetime = data["end_datetime"]
+    event.venue = data["venue"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}
 
@@ -100,11 +104,15 @@ def post_venue():
     data = request.get_json()
     new_venue = Venue(name=data["name"], 
                       url=data["url"], 
-                      adress=data["adress"], 
+                      address=data["address"], 
                       zipcode=data["zipcode"], 
                       city=data["city"],
                       country=data["country"],
+                      email=data["email"],
+                      phone=data["phone"]
                       )
+    if len(Venue.query.filter(Venue.name == data["name"]).all()) > 0:
+        return Response({'That venue already exists, try to patch this venue if the infos are not up to date'}), 409, {'ContentType':'application/json'}
     db.session.add(new_venue)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
@@ -119,6 +127,8 @@ def patch_venue(id):
     venue.zipcode = data["zipcode"]
     venue.city = data["city"]
     venue.country = data["country"]
+    venue.email = data["email"]
+    venue.phone = data["phone"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'} 
 
@@ -137,14 +147,14 @@ def get_users():
     limit = args.get('limit') if 'limit' in args else 20
     offset = args.get('offset') if 'offset' in args else 0
     page = int(offset)*int(limit)
-    users = Users.query.offset(page).limit(limit).all()
+    users = AppUser.query.offset(page).limit(limit).all()
     response = []
     for user in users : response.append(user.toDict())
     return jsonify(response)
 
 @app.route('/user/<id>')
 def get_user(id):
-    users = Users.query.filter(Users.id == id).all()
+    users = AppUser.query.filter(AppUser.id == id).all()
     response = []
     for user in users : response.append(user.toDict())
     if len(response) == 0:
@@ -154,12 +164,22 @@ def get_user(id):
 @app.post('/user')
 def post_user():
     data = request.get_json()
-    new_user = Users(lastname=data["lastname"], 
-                      firstname=data["firstname"], 
-                      pseudo=data["pseudo"], 
-                      birthdate=data["birthdate"], 
-                      email=data["email"]
+    new_user = AppUser(first_name=data["first_name"], 
+                      last_name=data["last_name"], 
+                      username=data["username"], 
+                      birth_date=data["birth_date"], 
+                      email=data["email"],
+                      mobile=data["mobile"],
+                      password=data["password"]
                       )
+    if len(AppUser.query.filter(AppUser.email == data["email"]).all()) > 0:
+        return Response({'Email already used'}), 409, {'ContentType':'application/json'}
+    if len(AppUser.query.filter(AppUser.username == data["username"]).all()) > 0:
+        return Response({'Username already exists'}), 409, {'ContentType':'application/json'}
+    if len(AppUser.query.filter(AppUser.first_name == data["first_name"]).all()) > 0 and len(AppUser.query.filter(AppUser.last_name == data["last_name"]).all()):
+        return Response({'This user already exists'}), 409, {'ContentType':'application/json'}
+    if len(AppUser.query.filter(AppUser.mobile == data["mobile"]).all()) > 0 :
+        return Response({'Mobile already used'}), 409, {'ContentType':'application/json'}
     db.session.add(new_user)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
@@ -167,18 +187,20 @@ def post_user():
 @app.patch('/user/<id>')
 def patch_user(id):
     data = request.get_json()
-    user = Users.query.filter(Users.id == id).first_or_404()
-    user.lastname = data["lastname"]
-    user.firstname = data["firstname"]
-    user.pseudo = data["pseudo"]
-    user.birthdate = data["birthdate"]
+    user = AppUser.query.filter(AppUser.id == id).first_or_404()
+    user.first_name = data["first_name"]
+    user.last_name = data["last_name"]
+    user.username = data["username"]
+    user.birth_date = data["birth_date"]
     user.email = data["email"]
+    user.mobile = data["mobile"]
+    user.password = data["password"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}
 
 @app.delete('/user/<id>')
 def delete_user(id):
-    user = Users.query.filter(Users.id == id).first_or_404()
+    user = AppUser.query.filter(AppUser.id == id).first_or_404()
     db.session.delete(user)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
@@ -198,11 +220,12 @@ def get_eventDetails(id):
 def post_eventDetails():
     data = request.get_json()
     new_eventDetails = EventDetails(event=data["event"], 
-                                    price=data["price"], 
-                                    attendes=data["attendes"], 
+                                    prices=data["prices"], 
                                     description=data["description"], 
                                     organizer=data["organizer"]
                       )
+    if len(EventDetails.query.filter(EventDetails.event == data["event"]).all()):
+        return Response({'This events is already detailed, try to patch if informations are not up to date'}), 409, {'ContentType':'application/json'}
     db.session.add(new_eventDetails)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
@@ -211,9 +234,8 @@ def post_eventDetails():
 def patch_eventDetails(id):
     data = request.get_json()
     event_details = EventDetails.query.filter(EventDetails.event == id).first_or_404()
-    event_details.price = data["price"]
+    event_details.prices = data["prices"]
     event_details.attendes = data["attendes"]
-    event_details.description = data["description"]
     event_details.organizer = data["organizer"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}

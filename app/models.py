@@ -1,4 +1,8 @@
-from sqlalchemy import Column, Integer, DateTime, Date, Boolean, String, Text, ForeignKey,inspect
+from sqlalchemy import Column, Integer, Float, DateTime, Date, JSON, String, Text, ForeignKey, func,inspect
+from datetime import datetime
+from werkzeug.security import check_password_hash, generate_password_hash
+from geoalchemy2 import Geometry
+
 
 from . import db # from __init__.py
 
@@ -30,23 +34,21 @@ class Event(db.Model):
     __tablename__="event"
 
     id  = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # Title of the event
     title = Column(String(256), nullable=False)
-    # TODO: add description field
+    # Url of the image of the event
     img_url = Column(String(256), nullable=True)
-    # TODO: rename start_date -> start_datetime
-    start_date = Column(DateTime(timezone=True), nullable=False)
-    # TODO: rename end_date -> end_datetime
-    end_date = Column(DateTime(timezone=True), nullable=False)
-    # TODO: rename venue_id -> venue. Foreign key is indeed venue.id
+    # Start datetime of the event 
+    start_datetime = Column(DateTime(timezone=True), nullable=False)
+    # End datetime of the event 
+    end_datetime = Column(DateTime(timezone=True), nullable=False)
     # NB: this is a one to one relationship
-    venue_id = Column(Integer, ForeignKey('venue.id'))
+    venue = Column(Integer, ForeignKey('venue.id'))
     event_details = db.relationship('EventDetails', backref="oneevent")
-    
-    # TODO: add created and updated fields (automatically updated)
     # Date of event creation 
-    #created      = db.Column(db.DateTime(timezone=True), default=datetime.now)                           
+    created = Column(DateTime(timezone=True), default=func.now())                           
     # Date of event last update 
-    #updated      = db.Column(db.DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)   
+    update = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())   
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
@@ -60,46 +62,64 @@ class Venue(db.Model):
     __tablename__ = "venue"
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # Name of the venue
     name = Column(String(64), nullable = False)
-    # TODO: add description field
+    # Url of the venue
     url = Column(Text, default=None)
-    # TODO: rename adress -> address
-    adress = Column(String(64), nullable=False)
-    # TODO: add email field
-    # TODO: add phone field
+    # Address of the venue
+    address = Column(String(64), nullable=False)
+    # Zipcode of the venue
     zipcode = Column(String(64), nullable=False)
+    # City of the venue
     city = Column(String(64), nullable=False)
+    # Country of the venue
     country = Column(String(64), nullable=False)
+    # Email of the venue
+    email = Column(String(64), nullable=False)
+    # Phone number of the venue
+    phone = Column(String(64), nullable=False)
     # TODO: add location field (latitude and longitude) -> see PostGIS extension
-    # TODO: remove field 'event'. For now, 'venue_id' in Event table is OK 
-    events = db.relationship('Event', backref='venue')
+    # events = db.relationship('Event', backref='venue')
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
 
-# TODO: rename Users -> User    
-class Users(db.Model):
+  
+class AppUser(db.Model):
     """
-    User
+    App User
+
+    See => https://schema.org/Person
     """
-    # TODO: rename users -> user
-    __tablename__ = "users"
+    
+    __tablename__ = "app_user"
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    # TODO: rename firstname -> first_name
-    firstname = Column(String(64), nullable=False)
-    # TODO: rename lastname -> last_name
-    lastname = Column(String(64), nullable=False)
-    # TODO: rename pseudo -> username / nullable=False
-    pseudo = Column(String(16), nullable=True, default=None)
-    # TODO: rename birthdate -> birth_date
-    birthdate = Column(Date, nullable=False)
+    # First name of the user
+    first_name = Column(String(64), nullable=False)
+    # Last name of the user
+    last_name = Column(String(64), nullable=False)
+    # Username of the user
+    username = Column(String(16), nullable=False)
+    # Birth date of the user
+    birth_date = Column(Date, nullable=False)
+    # Email of the user
     email = Column(String(64), nullable=False)
-    # TODO: add mobile field
-    # TODO: add password_hash field
+    # Phone number of the user
+    mobile = Column(String(16), nullable=False)
+    # Password of user => https://youtu.be/8ebIEefhBpM?si=qburaQAyHBxueuzN
+    password_hash = Column(String(16), nullable=False)
 
-    # TODO: field to be removed
-    event_details = db.relationship('EventDetails', backref='users')
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attibute!')
+    
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
@@ -111,15 +131,15 @@ class EventDetails(db.Model):
     __tablename__ = "event_details"
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # Id of the event that is detailed
     event = Column(Integer, ForeignKey('event.id'))
-    # TODO: rename price -> prices / should be reprensented as a JSON value. 
+    # Price of the event
     # Something like {'minor': 10, 'major': 20, 'currency': 'EUR'}
-    price = Column(Integer, nullable=True)
-    # TODO: remove this field for now
-    attendes = Column(Integer, nullable=False)
-    # TODO: remove filed 'description'. For now, 'description' in Event table is OK
+    prices = Column(JSON, nullable=True)
+    # Description of the event
     description = Column(Text, nullable=False)
-    organizer = Column(Integer, ForeignKey('users.id'))
+    #Id of the user that organize the event
+    organizer = Column(Integer, ForeignKey('app_user.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
