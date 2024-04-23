@@ -232,10 +232,12 @@ GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 ```
 nano wsgi.py
 
+"
 from app import app
 
 if __name__ == '__main__':
   		 app.run()
+"
 
 ```
 ## Setup gunicorn as systemd service 
@@ -243,7 +245,7 @@ if __name__ == '__main__':
 ```
 sudo nano /etc/systemd/system/events-api.service
 
-
+"
 [Unit]
 Description=Guinicorn instance to serve events-api Flask app
 After=network.target
@@ -258,7 +260,7 @@ ExecStart=/home/tm/events-api/.env/bin/gunicorn --workers 3 --bind unix:events-a
 
 [Install]
 WantedBy=multi-user.target
-
+"
 
 sudo systemctl start events-api.service
 sudo systemctl enable events-api.service
@@ -270,7 +272,7 @@ Instalation and configuration of nginx
 sudo apt install nginx
 sudo nano /etc/nginx/sites-available/events-api.conf
 
-
+"
 server{
     	listen 80;
     	server_name events-api.org www.events-api.org;
@@ -280,7 +282,7 @@ server{
             	proxy_pass http://unix:home/tm/events-api/events-api.sock
     	}
 }
-
+"
 
 sudo ln -s /etc/nginx/sites-available/events-api.conf /etc/nginx/sites-enabled/
 sudo systemctl restart nginx.service
