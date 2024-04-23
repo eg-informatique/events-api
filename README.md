@@ -134,6 +134,11 @@ INSERT INTO test_user(id, name, email) VALUES (1, 'Jim', 'jim@vtn.ch');
 
 # Server setup
 
+## Tutorials 
+
+* https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-22-04
+* https://youtu.be/KWIIPKbdxD0?si=ehg_5wYzonSt17Pi
+
 ## Python setup
 
 Creation of new user 
