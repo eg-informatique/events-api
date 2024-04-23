@@ -19,7 +19,7 @@ CREATE TABLE app_user (
     birth_date DATE NOT NULL,
     email VARCHAR(64) NOT NULL,
     mobile VARCHAR(16) NOT NULL,
-    password_hash VARCHAR(128) NOT NULL,
+    password_hash VARCHAR(256) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -27,10 +27,10 @@ CREATE TABLE event (
     id uuid DEFAULT gen_random_uuid(),
     title VARCHAR(256) NOT NULL,
     img_url VARCHAR(256) DEFAULT NULL,  
-    start_date TIMESTAMPTZ NOT NULL,
-    end_date TIMESTAMPTZ NOT NULL,  
+    start_datetime TIMESTAMPTZ NOT NULL,
+    end_datetime TIMESTAMPTZ NOT NULL,  
     created TIMESTAMPTZ NOT NULL,
-    update TIMESTAMPTZ NOT NULL,
+    update TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     venue uuid NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (venue) REFERENCES venue (id)
