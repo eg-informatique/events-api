@@ -100,13 +100,13 @@ class AppUser(db.Model):
     # Last name of the user
     last_name = Column(String(64), nullable=False)
     # Username of the user
-    username = Column(String(16), nullable=False)
+    username = Column(String(64), nullable=False)
     # Birth date of the user
     birth_date = Column(Date, nullable=False)
     # Email of the user
     email = Column(String(64), nullable=False)
     # Phone number of the user
-    mobile = Column(String(16), nullable=False)
+    mobile = Column(String(64), nullable=False)
     # Password of user => https://youtu.be/8ebIEefhBpM?si=qburaQAyHBxueuzN
     password_hash = Column(String(16), nullable=False)
 
