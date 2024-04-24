@@ -261,7 +261,7 @@ Group=www-data
 WorkingDirectory=/home/tm/events-api
 Environment="PATH=/home/tm/events-api/.env/bin"
 Environment="DATABASE_URL=postgresql+psycopg2://admin:StendeRmaten@localhost:5432/events_db"
-ExecStart=/home/tm/events-api/.env/bin/gunicorn --workers 3 --bind unix:events-api.sock -m 007 wsgi:>
+ExecStart=/home/tm/events-api/.env/bin/gunicorn --workers 3 --bind unix:events-api.sock -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target
