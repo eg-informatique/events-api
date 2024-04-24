@@ -133,6 +133,7 @@ GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 Creation of new user 
 
 ```
+adduser tm
 sudo usermod -aG sudo tm
 su - tm
 
