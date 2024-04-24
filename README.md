@@ -126,6 +126,7 @@ GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 
 * https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-22-04
 * https://youtu.be/KWIIPKbdxD0?si=ehg_5wYzonSt17Pi
+* https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-22-04
 
 ## Python setup
 
