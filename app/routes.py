@@ -11,13 +11,6 @@ from .models import *
 def index():
     return render_template('./index.html')
 
-@app.route('/test_users')
-def list_all_test_users():
-    users = TestUser.query.all()
-    response = []
-    for user in users: response.append(user.toDict())
-    return jsonify(response)
-
 #------------------------------Event------------------------------------------
 
 @app.get('/events')
@@ -53,7 +46,7 @@ def get_event(id):
     response=[]
     for event in events : response.append(event.toDict())
     if len(response) == 0:
-        return Response({'ERROR':True}, 404, {'ContentTypes':'application/json'})
+        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
     return jsonify(response)
 
 @app.patch('/event/<id>')
@@ -96,7 +89,7 @@ def get_venue(id):
     response = []
     for venue in venues : response.append(venue.toDict())
     if len(response) == 0:
-        return Response({'ERROR':True}, 404, {'ContentTypes':'application/json'})
+        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
     return jsonify(response)
 
 @app.post('/venue')
@@ -158,7 +151,7 @@ def get_user(id):
     response = []
     for user in users : response.append(user.toDict())
     if len(response) == 0:
-        return Response({'ERROR':True}, 404, {'ContentTypes':'application/json'})
+        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
     return jsonify(response)
 
 @app.post('/user')
@@ -213,7 +206,7 @@ def get_eventDetails(id):
     response = []
     for event in event_details : response.append(event.toDict())
     if len(response) == 0:
-        return Response({'ERROR':True}, 404, {'ContentTypes':'application/json'})
+        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
     return jsonify(response)
 
 @app.post('/event_details/')
