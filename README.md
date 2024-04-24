@@ -6,6 +6,7 @@
 ```
 python3 -m venv .env
 source .env/bin/activate
+export DATABASE_URL=admin:StendeRmqten@localhost:5423/events_db
 
 pip install -r requirements.txt
 
@@ -26,29 +27,27 @@ flask run
 * https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application
 
 
-# Setup
+# Private setup
 
 Creation of the virtual environment
 
 ```
+sudo apt install python3.10-venv
 python3 -m venv .env
 source .env/bin/activate
-
-sudo apt install postgresql-14
+deactivate
 
 ```
-
 Installation of Postgresql server
 
 ```
 sudo apt install postgresql-14
-
 sudo -u postgres psql
 
-# CREATE DATABASE events_db;
-# CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
-# \c events_db;
-# GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
+CREATE DATABASE events_db;
+CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
+\c events_db;
+\q
 
 sudo nano /etc/postgresql/14/main/pg_hba.conf
 
@@ -57,78 +56,62 @@ host    all             all             127.0.0.1/32            trust
 ---
 
 ```
-
-Part 1 (Flask configuration)
-
-```
-# install flask
-pip install flask
-mkdir app
-cd app
-
-nano __init__.py
-
---
-from flask import Flask
-
-app = Flask(__name__)
-
-from app import routes
---
-
-nano routes.py
-
---
-from app import app
-
-@app.route('/')
-@app.route('/index')
-def index():
-    return "Hello, World!"
---
-
-cd ..
-
-nano events-app.py
-
---
-from app import app
---
-
-pip install python-dotenv
-
-nano .flaskenv
-
---
-FLASK_APP=events-app.py
-DEV_DB_URL='postgresql+psycopg2://admin:StendeRmqten@localhost:5423/events_db'
-FLASK_ENV=development
-FLASK_DEBUG=True
---
-
-# export FLASK_APP=myapp.py
-
-flask run
-```
-
-Part 2 (Database configuration)
+Database configuration
 
 ```
-# create test table
 sudo -u postgres psql
+\c events_db
 
-# \c events_db
-
-CREATE TABLE test_user(
-id INT PRIMARY KEY,
-name VARCHAR(64),
-email VARCHAR(64)
+CREATE TABLE venue (
+    id uuid DEFAULT gen_random_uuid(),
+    name VARCHAR(64) NOT NULL,
+    url TEXT DEFAULT NULL,
+    address VARCHAR(64) DEFAULT NULL,
+    zipcode VARCHAR(64) NOT NULL,
+    city VARCHAR(64) NOT NULL,  
+    country VARCHAR(64) NOT NULL,
+    email VARCHAR(64) NOT NULL,
+    phone VARCHAR(16) NOT NULL,
+    PRIMARY KEY (id) 
 );
 
-INSERT INTO test_user(id, name, email) VALUES (1, 'Jim', 'jim@vtn.ch');
+CREATE TABLE app_user (
+    id uuid DEFAULT gen_random_uuid(),
+    first_name VARCHAR(64) NOT NULL,
+    last_name VARCHAR(64) NOT NULL,
+    username VARCHAR(16) NOT NULL,
+    birth_date DATE NOT NULL,
+    email VARCHAR(64) NOT NULL,
+    mobile VARCHAR(16) NOT NULL,
+    password_hash VARCHAR(256) NOT NULL,
+    PRIMARY KEY (id)
+);
 
-# start flask 
-# visit http://127.0.0.1:5000/test_users
+CREATE TABLE event (
+    id uuid DEFAULT gen_random_uuid(),
+    title VARCHAR(256) NOT NULL,
+    img_url VARCHAR(256) DEFAULT NULL,  
+    start_datetime TIMESTAMPTZ NOT NULL,
+    end_datetime TIMESTAMPTZ NOT NULL,  
+    created TIMESTAMPTZ NOT NULL,
+    update TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    venue uuid NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (venue) REFERENCES venue (id)
+);
+
+CREATE TABLE event_details (
+    id uuid DEFAULT gen_random_uuid(),
+    event uuid NOT NULL,
+    prices JSON DEFAULT NULL,
+    description TEXT NOT NULL,
+    organizer uuid NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (event) REFERENCES event (id),
+    FOREIGN KEY (organizer) REFERENCES app_user (id)
+);
+
+GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 
 ```
 
