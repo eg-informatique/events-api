@@ -44,10 +44,12 @@ Installation of Postgresql server
 sudo apt install postgresql-14
 sudo -u postgres psql
 
+---
 CREATE DATABASE events_db;
 CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
 \c events_db;
 \q
+---
 
 sudo nano /etc/postgresql/14/main/pg_hba.conf
 
@@ -60,6 +62,8 @@ Database configuration
 
 ```
 sudo -u postgres psql
+
+---
 \c events_db
 
 CREATE TABLE venue (
@@ -112,6 +116,7 @@ CREATE TABLE event_details (
 );
 
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
+---
 
 ```
 
@@ -220,12 +225,12 @@ GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 ```
 nano wsgi.py
 
-"
+---
 from app import app
 
 if __name__ == '__main__':
   		 app.run()
-"
+---
 
 ```
 ## Setup gunicorn as systemd service 
@@ -233,7 +238,7 @@ if __name__ == '__main__':
 ```
 sudo nano /etc/systemd/system/events-api.service
 
-"
+---
 [Unit]
 Description=Guinicorn instance to serve events-api Flask app
 After=network.target
@@ -248,7 +253,7 @@ ExecStart=/home/tm/events-api/.env/bin/gunicorn --workers 3 --bind unix:events-a
 
 [Install]
 WantedBy=multi-user.target
-"
+---
 
 sudo systemctl start events-api.service
 sudo systemctl enable events-api.service
@@ -260,7 +265,7 @@ Instalation and configuration of nginx
 sudo apt install nginx
 sudo nano /etc/nginx/sites-available/events-api.conf
 
-"
+---
 server{
     	listen 80;
     	server_name events-api.org www.events-api.org;
@@ -270,7 +275,7 @@ server{
             	proxy_pass http://unix:home/tm/events-api/events-api.sock
     	}
 }
-"
+---
 
 sudo ln -s /etc/nginx/sites-available/events-api.conf /etc/nginx/sites-enabled/
 sudo systemctl restart nginx.service
@@ -283,5 +288,27 @@ sudo ufw enable
 sudo ufw allow "Nginx Full"
 sudo ufw allow ssh
 sudo chmod 775 /home/tm
+
+```
+## Setup SSL for https conections
+
+Intall certbot
+
+```
+sudo snap install core; sudo snap refresh core
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+```
+Add a SSL certification to events-api.org
+
+```
+sudo certbot --nginx -d events-api.org -d www.events-api.org
+
+```
+Activate automatic SSL certification renew
+
+```
+sudo certbot renew --dry-run
 
 ```
