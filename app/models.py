@@ -1,30 +1,11 @@
-from sqlalchemy import Column, Integer, Float, DateTime, Date, JSON, String, Text, ForeignKey, func,inspect
+from sqlalchemy import Column, Integer, DateTime, Date, JSON, String, Text, ForeignKey, func, inspect
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from geoalchemy2 import Geometry
 
 
 from . import db # from __init__.py
-
-# SQL Datatype Objects => https://docs.sqlalchemy.org/en/14/core/types.html
-class TestUser(db.Model):
-    """
-    Test entity
-    """
-    #name of the table in database
-    __tablename__="test_user"
-
-    id           = db.Column(Integer, primary_key=True, autoincrement=True)
-    email        = db.Column(db.String(64), nullable=False, unique=True)
-    name     = db.Column(db.String(64), nullable=False)
-
-    # How to serialize SqlAlchemy PostgreSQL Query to JSON => https://stackoverflow.com/a/46180522
-    def toDict(self):
-        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
-
-    def __repr__(self):
-        return "<%r>" % self.email
-    
+ 
 class Event(db.Model):
     """
     Event 
@@ -108,7 +89,7 @@ class AppUser(db.Model):
     # Phone number of the user
     mobile = Column(String(64), nullable=False)
     # Password of user => https://youtu.be/8ebIEefhBpM?si=qburaQAyHBxueuzN
-    password_hash = Column(String(16), nullable=False)
+    password_hash = Column(String(256), nullable=False)
 
     @property
     def password(self):
