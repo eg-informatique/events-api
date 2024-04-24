@@ -292,7 +292,7 @@ sudo chmod 775 /home/tm
 ```
 ## Setup SSL for https conections
 
-Intall certbot
+Install certbot
 
 ```
 sudo snap install core; sudo snap refresh core
