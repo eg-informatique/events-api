@@ -115,7 +115,7 @@ GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 
 ```
 
-# Server setup
+# Server setup and deploy
 
 ## Tutorials 
 
