@@ -23,7 +23,8 @@ def get_events():
     response = []
     for event in events : response.append(event.toDict())
     not_sorted_events = jsonify(response)
-    sorted_events = sorted(response, key=lambda x: datetime.strftime(not_sorted_events["start_datetime"], '%m/%d/%Y'))
+    sorted_events = {key : not_sorted_events["start_datetime"]
+                     for key in sorted(not_sorted_events)}
     return jsonify(sorted_events)
 
 @app.post('/event')
