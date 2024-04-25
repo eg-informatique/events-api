@@ -19,13 +19,10 @@ def get_events():
     limit = args.get('limit') if 'limit' in args else 20
     offset = args.get('offset') if 'offset' in args else 0
     page = int(offset)*int(limit)
-    events = Event.query.offset(page).limit(limit).all()
+    events = Event.query.offset(page).limit(limit).order_by(Event.start_datetime.desc()).all()
     response = []
     for event in events : response.append(event.toDict())
-    not_sorted_events = jsonify(response)
-    sorted_events = {key : not_sorted_events["start_datetime"]
-                     for key in sorted(not_sorted_events)}
-    return jsonify(sorted_events)
+    return jsonify(response)
 
 @app.post('/event')
 def add_event():
