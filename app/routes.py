@@ -19,7 +19,7 @@ def get_events():
     limit = args.get('limit') if 'limit' in args else 20
     offset = args.get('offset') if 'offset' in args else 0
     page = int(offset)*int(limit)
-    events = Event.query.offset(page).limit(limit).order_by(Event.start_datetime.desc()).all()
+    events = Event.query.order_by(Event.start_datetime.desc()).offset(page).limit(limit).all()
     response = []
     for event in events : response.append(event.toDict())
     return jsonify(response)
