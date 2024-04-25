@@ -22,7 +22,9 @@ def get_events():
     events = Event.query.offset(page).limit(limit).all()
     response = []
     for event in events : response.append(event.toDict())
-    return jsonify(response)
+    not_sorted_events = jsonify(response)
+    sorted_events = sorted(response, key=lambda x: datetime.strftime(not_sorted_events["start_datetime"], '%m/%d/%Y'))
+    return jsonify(sorted_events)
 
 @app.post('/event')
 def add_event():
