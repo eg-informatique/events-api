@@ -6,7 +6,7 @@
 ```
 python3 -m venv .env
 source .env/bin/activate
-export DATABASE_URL=admin:StendeRmqten@localhost:5423/events_db
+export DATABASE_URL=postgresql+psycopg2://admin:YOUR_PASSWORD@localhost:5432/events_db
 
 pip install -r requirements.txt
 
@@ -46,7 +46,7 @@ sudo -u postgres psql
 
 ---
 CREATE DATABASE events_db;
-CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
+CREATE USER admin WITH ENCRYPTED PASSWORD 'YOUR_PASSWORD';
 \c events_db;
 \q
 ---
@@ -168,7 +168,7 @@ Setup the database
 
 ```
 CREATE DATABASE events_db;
-CREATE USER admin WITH ENCRYPTED PASSWORD 'StendeRmaten';
+CREATE USER admin WITH ENCRYPTED PASSWORD 'YOUR_PASSWORD';
 \c events_db;
 CREATE TABLE venue (
     id uuid DEFAULT gen_random_uuid(),
@@ -250,7 +250,7 @@ User=tm
 Group=www-data
 WorkingDirectory=/home/tm/events-api
 Environment="PATH=/home/tm/events-api/.env/bin"
-Environment="DATABASE_URL=postgresql+psycopg2://admin:StendeRmaten@localhost:5432/events_db"
+Environment="DATABASE_URL=postgresql+psycopg2://admin:YOUR_PASSWORD@localhost:5432/events_db"
 ExecStart=/home/tm/events-api/.env/bin/gunicorn --workers 3 --bind unix:events-api.sock -m 007 wsgi:app
 
 [Install]
@@ -274,6 +274,7 @@ server{
 
     	location / {
             	include proxy_params;
+                add_header Access-Control-Allow-Origin "http://localhost:3000";
             	proxy_pass http://unix:home/tm/events-api/events-api.sock
     	}
 }
