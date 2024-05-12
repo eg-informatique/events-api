@@ -96,14 +96,18 @@ class Event(db.Model):
     # End datetime of the event 
     end_datetime = Column(DateTime(timezone=True), nullable=False)
     # NB: this is a one to one relationship
-    venue = Column(Integer, ForeignKey('venue.id'))
-    event_details = db.relationship('EventDetails', backref="oneevent")
+    venue = Column(UUID, ForeignKey('venue.id'))
     # Date of event creation 
     created = Column(DateTime(timezone=True), default=func.now())                           
     # Date of event last update 
     update = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
-    #Details of the event  
-    details = Column(JSON, nullable=False)
+    #Price of the event  
+    prices = Column(JSON, nullable=False)
+    #Description of the event
+    description = Column(Text, nullable=False)
+    #Organizer of the event
+    organizer = Column(UUID, ForeignKey('app_user.id'))
+    
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }

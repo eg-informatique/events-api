@@ -31,18 +31,11 @@ CREATE TABLE event (
     end_datetime TIMESTAMPTZ NOT NULL,  
     created TIMESTAMPTZ NOT NULL,
     update TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    venue uuid NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (venue) REFERENCES venue (id)
-);
-
-CREATE TABLE event_details (
-    id uuid DEFAULT gen_random_uuid(),
-    event uuid NOT NULL,
     prices JSON DEFAULT NULL,
     description TEXT NOT NULL,
+    venue uuid NOT NULL,
     organizer uuid NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (event) REFERENCES event (id),
+    FOREIGN KEY (venue) REFERENCES venue (id),
     FOREIGN KEY (organizer) REFERENCES app_user (id)
 );
