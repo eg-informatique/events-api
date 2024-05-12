@@ -31,8 +31,11 @@ def add_event():
                       img_url=data["img_url"], 
                       start_datetime=data["start_datetime"], 
                       end_datetime=data["end_datetime"],
-                      update=func.now(),
-                      venue=data["venue"])
+                      created=func.now(),
+                      prices=data["prices"],
+                      description=data["description"],
+                      venue=data["venue"],
+                      organizer=data["organizer"] )
     
     if len(Event.query.filter(Event.title == data["title"]).all()) > 0:
         return Response({'Conficlt name raised : That event already exists'}), 409, {'ContentType':'application/json'}
@@ -57,7 +60,10 @@ def patch_event(id):
     event.img_url = data["img_url"]
     event.start_datetime = data["start_datetime"]
     event.end_datetime = data["end_datetime"]
+    event.prices = data["prices"]
+    event.description = data["description"]
     event.venue = data["venue"]
+    event.organizer = data["organizer"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}
 
