@@ -2,7 +2,8 @@ from sqlalchemy import Column, Integer, DateTime, Date, JSON, String, Text, Fore
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from geoalchemy2 import Geometry
-
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 from . import db # from __init__.py
  
@@ -14,7 +15,7 @@ class Event(db.Model):
     """
     __tablename__="event"
 
-    id  = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    id  = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     # Title of the event
     title = Column(String(256), nullable=False)
     # Url of the image of the event
@@ -29,7 +30,9 @@ class Event(db.Model):
     # Date of event creation 
     created = Column(DateTime(timezone=True), default=func.now())                           
     # Date of event last update 
-    update = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())   
+    update = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
+    #Details of the event  
+    details = Column(JSON, nullable=False)
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
@@ -42,7 +45,7 @@ class Venue(db.Model):
     """
     __tablename__ = "venue"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     # Name of the venue
     name = Column(String(64), nullable = False)
     # Url of the venue
@@ -75,7 +78,7 @@ class AppUser(db.Model):
     
     __tablename__ = "app_user"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     # First name of the user
     first_name = Column(String(64), nullable=False)
     # Last name of the user
@@ -101,26 +104,6 @@ class AppUser(db.Model):
     
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    def toDict(self):
-        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
-
-class EventDetails(db.Model):
-    """
-    Event details
-    """
-    __tablename__ = "event_details"
-
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    # Id of the event that is detailed
-    event = Column(Integer, ForeignKey('event.id'))
-    # Price of the event
-    # Something like {'minor': 10, 'major': 20, 'currency': 'EUR'}
-    prices = Column(JSON, nullable=True)
-    # Description of the event
-    description = Column(Text, nullable=False)
-    #Id of the user that organize the event
-    organizer = Column(Integer, ForeignKey('app_user.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }

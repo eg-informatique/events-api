@@ -64,8 +64,6 @@ def patch_event(id):
 @app.delete('/event/<id>')
 def delete_event(id):
     event = Event.query.filter(Event.id == id).first_or_404()
-    event_details = EventDetails.query.filter(EventDetails.event == id).first_or_404()
-    db.session.delete(event_details)
     db.session.delete(event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
@@ -195,47 +193,5 @@ def patch_user(id):
 def delete_user(id):
     user = AppUser.query.filter(AppUser.id == id).first_or_404()
     db.session.delete(user)
-    db.session.commit()
-    return Response({'success':True}), 200, {'ContentType':'application/json'}
-
-#------------------------------Event_details------------------------------------------
-
-@app.route('/event_details/<id>')
-def get_eventDetails(id):
-    event_details = EventDetails.query.filter(EventDetails.event == id).all()
-    response = []
-    for event in event_details : response.append(event.toDict())
-    if len(response) == 0:
-        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
-    return jsonify(response)
-
-@app.post('/event_details/')
-def post_eventDetails():
-    data = request.get_json()
-    new_eventDetails = EventDetails(event=data["event"], 
-                                    prices=data["prices"], 
-                                    description=data["description"], 
-                                    organizer=data["organizer"]
-                      )
-    if len(EventDetails.query.filter(EventDetails.event == data["event"]).all()):
-        return Response({'This events is already detailed, try to patch if informations are not up to date'}), 409, {'ContentType':'application/json'}
-    db.session.add(new_eventDetails)
-    db.session.commit()
-    return Response({'success':True}), 200, {'ContentType':'application/json'}
-
-@app.patch('/event_details/<id>')
-def patch_eventDetails(id):
-    data = request.get_json()
-    event_details = EventDetails.query.filter(EventDetails.event == id).first_or_404()
-    event_details.prices = data["prices"]
-    event_details.attendes = data["attendes"]
-    event_details.organizer = data["organizer"]
-    db.session.commit()
-    return Response({'success':True}), 202, {'ContentType':'application/json'}
-
-@app.delete('/event_details/<id>')
-def delete_eventDetails(id):
-    event_details = EventDetails.query.filter(EventDetails.event == id).first_or_404()
-    db.session.delete(event_details)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
