@@ -6,36 +6,6 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 from . import db # from __init__.py
- 
-class Event(db.Model):
-    """
-    Event 
-
-    See https://schema.org/Event
-    """
-    __tablename__="event"
-
-    id  = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
-    # Title of the event
-    title = Column(String(256), nullable=False)
-    # Url of the image of the event
-    img_url = Column(String(256), nullable=True)
-    # Start datetime of the event 
-    start_datetime = Column(DateTime(timezone=True), nullable=False)
-    # End datetime of the event 
-    end_datetime = Column(DateTime(timezone=True), nullable=False)
-    # NB: this is a one to one relationship
-    venue = Column(Integer, ForeignKey('venue.id'))
-    event_details = db.relationship('EventDetails', backref="oneevent")
-    # Date of event creation 
-    created = Column(DateTime(timezone=True), default=func.now())                           
-    # Date of event last update 
-    update = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
-    #Details of the event  
-    details = Column(JSON, nullable=False)
-
-    def toDict(self):
-        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
 
 class Venue(db.Model):
     """
@@ -104,6 +74,36 @@ class AppUser(db.Model):
     
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def toDict(self):
+        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+
+class Event(db.Model):
+    """
+    Event 
+
+    See https://schema.org/Event
+    """
+    __tablename__="event"
+
+    id  = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
+    # Title of the event
+    title = Column(String(256), nullable=False)
+    # Url of the image of the event
+    img_url = Column(String(256), nullable=True)
+    # Start datetime of the event 
+    start_datetime = Column(DateTime(timezone=True), nullable=False)
+    # End datetime of the event 
+    end_datetime = Column(DateTime(timezone=True), nullable=False)
+    # NB: this is a one to one relationship
+    venue = Column(Integer, ForeignKey('venue.id'))
+    event_details = db.relationship('EventDetails', backref="oneevent")
+    # Date of event creation 
+    created = Column(DateTime(timezone=True), default=func.now())                           
+    # Date of event last update 
+    update = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
+    #Details of the event  
+    details = Column(JSON, nullable=False)
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
