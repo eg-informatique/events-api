@@ -208,6 +208,6 @@ def delete_user(id):
 def verify_user():
     data = request.get_json()
     user = AppUser.query.filter(AppUser.email == data["email"]).first_or_404()
-    if user.verify_password(user.password_hash, data["password"]):
+    if user.verify_password(data["password"]):
         return Response({'true':True}), {'ContentType': 'application/json'}
     else: return Response({'false':True}), {'ContentType': 'application/json'}
