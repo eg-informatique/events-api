@@ -90,7 +90,7 @@ class Event(db.Model):
     # Title of the event
     title = Column(String(256), nullable=False)
     # Url of the image of the event
-    img_url = Column(String(256), nullable=True)
+    img_url = Column(Text, nullable=True)
     # Start datetime of the event 
     start_datetime = Column(DateTime(timezone=True), nullable=False)
     # End datetime of the event 

@@ -202,6 +202,7 @@ def delete_user(id):
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
 
+
 #------------------------------Acount gestion--------------------------------------
 
 @app.route('/login')
@@ -209,5 +210,6 @@ def verify_user():
     data = request.get_json()
     user = AppUser.query.filter(AppUser.email == data["email"]).first_or_404()
     if user.verify_password(data["password"]):
-        return Response({'true':True}), {'ContentType': 'application/json'}
-    else: return Response({'false':True}), {'ContentType': 'application/json'}
+        return Response({'authenticated':True}), 200,{'ContentType': 'application/json'}
+    else: 
+        return Response({'authenticated':False}), 401,{'ContentType': 'application/json'}

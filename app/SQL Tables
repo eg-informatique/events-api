@@ -26,7 +26,7 @@ CREATE TABLE app_user (
 CREATE TABLE event (
     id uuid DEFAULT gen_random_uuid(),
     title VARCHAR(256) NOT NULL,
-    img_url VARCHAR(256) DEFAULT NULL,  
+    img_url TEXT DEFAULT NULL,  
     start_datetime TIMESTAMPTZ NOT NULL,
     end_datetime TIMESTAMPTZ NOT NULL,  
     created TIMESTAMPTZ NOT NULL,
