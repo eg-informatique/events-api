@@ -205,7 +205,7 @@ def delete_user(id):
 
 #------------------------------Acount gestion--------------------------------------
 
-@app.route('/login')
+@app.post('/login')
 def verify_user():
     data = request.get_json()
     user = AppUser.query.filter(AppUser.email == data["email"]).first_or_404()
