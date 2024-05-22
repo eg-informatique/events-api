@@ -16,10 +16,9 @@ def index():
 @app.get('/events')
 def get_events():
     args = request.args
-    limit = args.get('limit') if 'limit' in args else 20
-    offset = args.get('offset') if 'offset' in args else 0
-    page = int(offset)*int(limit)
-    events = Event.query.order_by(Event.start_datetime.asc()).offset(page).limit(limit).all()
+    page = args.get('page') if 'page' in args else 0
+    pages = int(page)*20
+    events = Event.query.order_by(Event.start_datetime.asc()).offset(paged).limit(20).all()
     response = []
     for event in events : response.append(event.toDict())
     return jsonify(response)
@@ -79,10 +78,9 @@ def delete_event(id):
 @app.route('/venues')
 def get_venues():
     args = request.args
-    limit = args.get('limit') if 'limit' in args else 20
-    offset = args.get('offset') if 'offset' in args else 0
-    page = int(offset)*int(limit)
-    venues = Venue.query.offset(page).limit(limit).all()
+    page = args.get('page') if 'page' in args else 0
+    pages = int(page)*20
+    venues = Venue.query.offset(pages).limit(20).all()
     response = []
     for venue in venues : response.append(venue.toDict())
     return jsonify(response)
@@ -141,10 +139,9 @@ def delete_venue(id):
 @app.get('/users')
 def get_users():
     args = request.args
-    limit = args.get('limit') if 'limit' in args else 20
-    offset = args.get('offset') if 'offset' in args else 0
-    page = int(offset)*int(limit)
-    users = AppUser.query.offset(page).limit(limit).all()
+    page = args.get('page') if 'page' in args else 0
+    pages = int(page)*20
+    users = AppUser.query.offset(pages).limit(20).all()
     response = []
     for user in users : response.append(user.toDict())
     return jsonify(response)
