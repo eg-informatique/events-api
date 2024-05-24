@@ -198,7 +198,7 @@ def getUserByEmail():
     if not email:
         return jsonify({'massage': 'Email is required'}), 400
     
-    user = AppUser.query.filter_by(AppUser.email==email).first()
+    user = AppUser.query.filter(AppUser.email==email).first()
     if user:
         return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email}})
     else: 
