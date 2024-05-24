@@ -50,17 +50,11 @@ class AppUser(db.Model):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     # First name of the user
-    first_name = Column(String(64), nullable=False)
+    first_name = Column(String(64), nullable=True)
     # Last name of the user
-    last_name = Column(String(64), nullable=False)
-    # Username of the user
-    username = Column(String(64), nullable=False)
-    # Birth date of the user
-    birth_date = Column(Date, nullable=False)
+    last_name = Column(String(64), nullable=True)
     # Email of the user
     email = Column(String(64), nullable=False)
-    # Phone number of the user
-    mobile = Column(String(64), nullable=False)
     # Password of user => https://youtu.be/8ebIEefhBpM?si=qburaQAyHBxueuzN
     password_hash = Column(String(256), nullable=False)
 

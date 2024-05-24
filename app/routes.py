@@ -159,21 +159,14 @@ def get_user(id):
 def post_user():
     data = request.get_json()
     new_user = AppUser(first_name=data["first_name"], 
-                      last_name=data["last_name"], 
-                      username=data["username"], 
-                      birth_date=data["birth_date"], 
+                      last_name=data["last_name"],
                       email=data["email"],
-                      mobile=data["mobile"],
                       password=data["password"]
                       )
     if len(AppUser.query.filter(AppUser.email == data["email"]).all()) > 0:
         return Response({'Email already used'}), 409, {'ContentType':'application/json'}
-    if len(AppUser.query.filter(AppUser.username == data["username"]).all()) > 0:
-        return Response({'Username already exists'}), 409, {'ContentType':'application/json'}
     if len(AppUser.query.filter(AppUser.first_name == data["first_name"]).all()) > 0 and len(AppUser.query.filter(AppUser.last_name == data["last_name"]).all()):
         return Response({'This user already exists'}), 409, {'ContentType':'application/json'}
-    if len(AppUser.query.filter(AppUser.mobile == data["mobile"]).all()) > 0 :
-        return Response({'Mobile already used'}), 409, {'ContentType':'application/json'}
     db.session.add(new_user)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
@@ -199,7 +192,17 @@ def delete_user(id):
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'}
 
-
+@app.get('/user')
+def getUserByEmail():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({'massage': 'Email is required'}), 400
+    
+    user = AppUser.query.filter_by(AppUser.email==email).first()
+    if user:
+        return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email}})
+    else: 
+        return jsonify({'exists': False}), 404
 #------------------------------Acount gestion--------------------------------------
 
 @app.post('/login')
