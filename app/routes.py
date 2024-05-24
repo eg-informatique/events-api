@@ -18,7 +18,7 @@ def get_events():
     args = request.args
     page = args.get('page') if 'page' in args else 0
     pages = int(page)*20
-    events = Event.query.order_by(Event.start_datetime.asc()).offset(page).limit(20).all()
+    events = Event.query.order_by(Event.start_datetime.asc()).offset(pages).limit(20).all()
     response = []
     for event in events : response.append(event.toDict())
     return jsonify(response)
