@@ -152,7 +152,7 @@ def get_user(id):
     response = []
     for user in users : response.append(user.toDict())
     if len(response) == 0:
-        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
+        return Response({'ERROR 404':True}), 404, {'ContentTypes':'application/json'}
     return jsonify(response)
 
 @app.post('/user')
