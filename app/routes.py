@@ -177,10 +177,7 @@ def patch_user(id):
     user = AppUser.query.filter(AppUser.id == id).first_or_404()
     user.first_name = data["first_name"]
     user.last_name = data["last_name"]
-    user.username = data["username"]
-    user.birth_date = data["birth_date"]
     user.email = data["email"]
-    user.mobile = data["mobile"]
     user.password = data["password"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}
