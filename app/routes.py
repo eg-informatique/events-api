@@ -208,6 +208,6 @@ def verify_user():
     user = AppUser.query.filter(AppUser.email == data["email"]).first_or_404()
     userData = jsonify(user.id)
     if user.verify_password(data["password"]):
-        return Response({'authenticated':True, 'id': userData}), 200,{'ContentType': 'application/json'}
+        return Response({'id': userData}), 200,{'ContentType': 'application/json'}
     else: 
         return Response({'authenticated':False}), 401,{'ContentType': 'application/json'}
