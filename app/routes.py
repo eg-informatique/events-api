@@ -44,12 +44,9 @@ def add_event():
 
 @app.route('/event/<id>')
 def get_event(id):
-    events = Event.query.filter(Event.id == id).all()
-    response=[]
-    for event in events : response.append(event.toDict())
-    if len(response) == 0:
-        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
-    return jsonify(response)
+    event = Event.query.filter(Event.id == id).first_or_404()
+    event_data = event.toDict()
+    return jsonify(event_data)
 
 @app.patch('/event/<id>')
 def patch_event(id):
@@ -89,7 +86,7 @@ def get_venues():
 def get_venue(id):
     venue = Venue.query.filter(Venue.id == id).first_or_404()
     venue_data = venue.toDict()
-    return jsonify(venue_data)
+    return jsonify(venue_data), 200
 
 @app.post('/venue')
 def post_venue():
@@ -145,12 +142,9 @@ def get_users():
 
 @app.route('/user/<id>')
 def get_user(id):
-    users = AppUser.query.filter(AppUser.id == id).all()
-    response = []
-    for user in users : response.append(user.toDict())
-    if len(response) == 0:
-        return Response({'ERROR 404':True}), 404, {'ContentTypes':'application/json'}
-    return jsonify(response)
+    user = AppUser.query.filter(AppUser.id == id).all()
+    user_data= user.toDict()
+    return jsonify(user_data)
 
 @app.post('/user')
 def post_user():
