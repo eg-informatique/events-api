@@ -89,7 +89,7 @@ def get_venues():
 def get_venue(id):
     venue = Venue.query.filter(Venue.id == id).first_or_404()
     venue_data = venue.toDict
-    return jsonify(venue_data)
+    return venue_data
 
 @app.post('/venue')
 def post_venue():
