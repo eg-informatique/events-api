@@ -262,14 +262,14 @@ sudo apt install nginx
 sudo nano /etc/nginx/sites-available/events-api.conf
 
 ---
-server{
-    	listen 80;
-    	server_name events-api.org www.events-api.org;
+server {
+        server_name events-api.org www.events-api.org;
 
-    	location / {
-            	include proxy_params;
-            	proxy_pass http://unix:home/tm/events-api/events-api.sock
-    	}
+        location / {
+                include proxy_params;
+                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000';
+                proxy_pass http://unix:home/tm/events-api/events-api.sock;
+        }
 }
 ---
 
