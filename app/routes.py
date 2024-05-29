@@ -88,7 +88,7 @@ def get_venues():
 @app.route('/venue/<id>')
 def get_venue(id):
     venue = Venue.query.filter(Venue.id == id).first_or_404()
-    venue_data = venue.toDict
+    venue_data = venue.toDict()
     return venue_data
 
 @app.post('/venue')
