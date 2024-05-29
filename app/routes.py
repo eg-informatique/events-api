@@ -142,7 +142,7 @@ def get_users():
 
 @app.route('/user/<id>')
 def get_user(id):
-    user = AppUser.query.filter(AppUser.id == id).all()
+    user = AppUser.query.filter(AppUser.id == id).first_or_404()
     user_data= user.toDict()
     return jsonify(user_data)
 
