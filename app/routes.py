@@ -87,12 +87,9 @@ def get_venues():
 
 @app.route('/venue/<id>')
 def get_venue(id):
-    venues = Venue.query.filter(Venue.id == id).all()
-    response = []
-    for venue in venues : response.append(venue.toDict())
-    if len(response) == 0:
-        return Response({'ERROR 404':True}, 404, {'ContentTypes':'application/json'})
-    return jsonify(response)
+    venue = Venue.query.filter(Venue.id == id).first_or_404()
+    venue_data = venue.toDict
+    return jsonify(venue_data)
 
 @app.post('/venue')
 def post_venue():
