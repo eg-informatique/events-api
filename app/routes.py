@@ -211,15 +211,15 @@ def verify_user():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    print("Request files:", request.files)
-    print("Request form:", request.form) 
+    # Vérifier la présence de la partie fichier dans la requête
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
-    
+
     file = request.files['file']
     user_uuid = request.form.get('user_uuid')
 
-    if file.filename == '':
+    # Vérifier la validité du fichier et de l'UUID utilisateur
+    if not file or file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
     if file and user_uuid:
@@ -230,5 +230,4 @@ def upload_file():
         file.save(file_path)
         file_url = f"/static/{user_uuid}/{filename}"
         return jsonify({"url": file_url}), 200
-
     return jsonify({"error": "Invalid request"}), 400
