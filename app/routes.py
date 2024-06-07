@@ -211,6 +211,7 @@ def verify_user():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+
     # Vérifier la présence de la partie fichier dans la requête
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -222,12 +223,15 @@ def upload_file():
     if not file or file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
-    if file and user_uuid:
-        filename = secure_filename(file.filename)
-        user_folder = os.path.join('/var/www/', user_uuid)
-        os.makedirs(user_folder, exist_ok=True)
-        file_path = os.path.join(user_folder, filename)
+    if file:
+        # Générer un nom de fichier avec un suffixe unique
+        ext = os.path.splitext(file.filename)[1]  # Obtenir l'extension du fichier
+        unique_filename = f"{os.path.splitext(file.filename)[0]}_{uuid.uuid4().hex}{ext}"
+        
+        filename = secure_filename(unique_filename)
+        file_path = os.path.join('/var/www/', filename)
         file.save(file_path)
-        file_url = f"https://events-api.org/static/{user_uuid}/{filename}"
+        file_url = f"/static/{filename}"
         return jsonify({"url": file_url}), 200
+
     return jsonify({"error": "Invalid request"}), 400
