@@ -228,6 +228,6 @@ def upload_file():
         os.makedirs(user_folder, exist_ok=True)
         file_path = os.path.join(user_folder, filename)
         file.save(file_path)
-        file_url = f"/static/{user_uuid}/{filename}"
+        file_url = f"https://events-api.org/static/{user_uuid}/{filename}"
         return jsonify({"url": file_url}), 200
     return jsonify({"error": "Invalid request"}), 400
