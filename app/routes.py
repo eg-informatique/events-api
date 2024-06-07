@@ -1,7 +1,10 @@
 from app import app
 
 from flask import Flask, Response, request, render_template, redirect, jsonify, json
+from werkzeug.utils import secure_filename
+import os
 import uuid
+
 
 from .models import *
 
@@ -201,3 +204,29 @@ def verify_user():
         return jsonify({'id': user.id, 'email':user.email}), 200
     else: 
         return Response({'authenticated':False}), 401,{'ContentType': 'application/json'}
+
+
+#------------------------------Img Upload--------------------------------------
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    
+    file = request.files['file']
+    user_uuid = request.form.get('user_uuid')
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    if file and user_uuid:
+        filename = secure_filename(file.filename)
+        user_folder = os.path.join('/var/www/', user_uuid)
+        os.makedirs(user_folder, exist_ok=True)
+        file_path = os.path.join(user_folder, filename)
+        file.save(file_path)
+        file_url = f"/static/{user_uuid}/{filename}"
+        return jsonify({"url": file_url}), 200
+
+    return jsonify({"error": "Invalid request"}), 400
