@@ -231,7 +231,7 @@ def upload_file():
         filename = secure_filename(unique_filename)
         file_path = os.path.join('/var/www/', filename)
         file.save(file_path)
-        file_url = f"/static/{filename}"
+        file_url = f"https://events-api.org/static/{filename}"
         return jsonify({"url": file_url}), 200
 
     return jsonify({"error": "Invalid request"}), 400
