@@ -211,6 +211,8 @@ def verify_user():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    print("Request files:", request.files)
+    print("Request form:", request.form) 
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
     
