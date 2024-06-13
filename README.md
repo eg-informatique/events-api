@@ -267,9 +267,17 @@ server {
 
         location / {
                 include proxy_params;
-                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000';
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Credentials' 'true';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'DNT, User-Agent, X-Request-With, If-Modified-Since, C>
+                add_header 'Access-Control-Allow-Expose-Headers' 'Content-Lenght, Content-Range';
                 proxy_pass http://unix:home/tm/events-api/events-api.sock;
         }
+
+        location /static/ {
+                alias /var/www/;
+         }
 }
 ---
 
