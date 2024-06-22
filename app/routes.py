@@ -28,22 +28,45 @@ def get_events():
 
 @app.post('/event')
 def add_event():
-    data = request.get_json()
-    new_event = Event(title=data["title"],  
-                      img_url=data["img_url"], 
-                      start_datetime=data["start_datetime"], 
-                      end_datetime=data["end_datetime"],
-                      created=func.now(),
-                      prices=data["prices"],
-                      description=data["description"],
-                      venue=data["venue"],
-                      organizer=data["organizer"] )
+    # Check for file in request
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+    data = request.form.to_dict()
     
+    # Validate file and UUID
+    if not file or file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    # Generate a unique filename
+    ext = os.path.splitext(file.filename)[1]  # Get file extension
+    unique_filename = f"{os.path.splitext(file.filename)[0]}_{uuid.uuid4().hex}{ext}"
+    filename = secure_filename(unique_filename)
+    file_path = os.path.join('/var/www/', filename)
+    file.save(file_path)
+    file_url = f"https://events-api.org/static/{filename}"
+
+    # Create event object
+    new_event = Event(
+        title=data["title"],
+        img_url=file_url,
+        start_datetime=data["start_datetime"],
+        end_datetime=data["end_datetime"],
+        created=func.now(),
+        prices=data["prices"],
+        description=data["description"],
+        venue=data["venue"],
+        organizer=data["organizer"]
+    )
+    
+    # Check if event title already exists
     if len(Event.query.filter(Event.title == data["title"]).all()) > 0:
-        return Response({'Conficlt name raised : That event already exists'}), 409, {'ContentType':'application/json'}
+        return Response({'Conflict name raised: That event already exists'}), 409, {'ContentType':'application/json'}
+    
     db.session.add(new_event)
     db.session.commit()
-    return Response({'success':True}), 200, {'ContentType':'application/json'} 
+    return Response({'success': True}), 200, {'ContentType':'application/json'} 
 
 @app.route('/event/<id>')
 def get_event(id):
