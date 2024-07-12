@@ -62,12 +62,12 @@ def add_event():
     
     # Check if event title already exists
     if len(Event.query.filter(Event.title == data["title"]).all()) > 0:
-        return jsonify({"Name Conflict"}), 409
+        return jsonify({'Name Conflict':True}), 409
 
     
     db.session.add(new_event)
     db.session.commit()
-    return jsonify({"success"}), 200
+    return jsonify({'success':True}), 200
 
 
 @app.route('/event/<id>')
