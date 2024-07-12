@@ -57,7 +57,7 @@ def add_event():
         prices=data["prices"],
         description=data["description"],
         venue=data["venue"],
-        organizer=data["organizer"]
+        organizer="32ccd224-b688-435c-864a-b8563480cce1"
     )
     
     # Check if event title already exists
