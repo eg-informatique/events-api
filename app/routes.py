@@ -66,7 +66,7 @@ def add_event():
     
     db.session.add(new_event)
     db.session.commit()
-    return Response({'success': True}), 200, {'ContentType':'application/json'} 
+    return Response({'success'}), 200, {'ContentType':'application/json'} 
 
 @app.route('/event/<id>')
 def get_event(id):
