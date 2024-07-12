@@ -54,7 +54,7 @@ def add_event():
         start_datetime=data["start_datetime"],
         end_datetime=data["end_datetime"],
         created=func.now(),
-        prices=data["prices"],
+        prices={"major":data["major_price"], "minor":data["minor_price"], "currency":"CHF"},
         description=data["description"],
         venue=data["venue"],
         organizer="32ccd224-b688-435c-864a-b8563480cce1"
