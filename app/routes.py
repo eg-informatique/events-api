@@ -48,19 +48,22 @@ def add_event():
     file_url = f"https://events-api.org/static/{filename}"
 
     # Create event object
-    new_event = Event(
-        title=data["title"],
-        img_url=file_url,
-        start_datetime=data["start_datetime"],
-        end_datetime=data["end_datetime"],
-        created=func.now(),
-        prices={"major":data["major_price"], "minor":data["minor_price"], "currency":"CHF"},
-        description=data["description"],
-        venue=data["venue"],
-        organizer=data["organizer"]
-    )
-    
-    # Check if event title already exists
+    try:
+        new_event = Event(
+            title=data["title"],
+            img_url=file_url,
+            start_datetime=data["start_datetime"],
+            end_datetime=data["end_datetime"],
+            created=func.now(),
+            prices={"major":data["major_price"], "minor":data["minor_price"], "currency":"CHF"},
+            description=data["description"],
+            venue=data["venue"],
+            organizer=data["organizer"]
+        )
+    except:
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        return jsonify({"Error":True}), 500
     if len(Event.query.filter(Event.title == data["title"]).all()) > 0:
         return jsonify({'Name Conflict':True}), 409
 
