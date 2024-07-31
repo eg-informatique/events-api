@@ -95,7 +95,7 @@ def patch_event(id):
 def delete_event(id):
     event = Event.query.filter(Event.id == id).first_or_404()
     img_url = event.img_url
-    file_path = img_url[28:]
+    file_path = f"var/www/{img_url[30:]}"
     if os.path.isfile(file_path):
         os.remove(file_path)
     else:
