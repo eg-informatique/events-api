@@ -57,7 +57,7 @@ def add_event():
         prices={"major":data["major_price"], "minor":data["minor_price"], "currency":"CHF"},
         description=data["description"],
         venue=data["venue"],
-        organizer="32ccd224-b688-435c-864a-b8563480cce1"
+        organizer=data["orgnizer"]
     )
     
     # Check if event title already exists
