@@ -222,7 +222,7 @@ def getUserByEmail():
     
     user = AppUser.query.filter(AppUser.email==email).first()
     if user:
-        return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email}})
+        return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email, 'first_name':user.first_name}})
     else: 
         return jsonify({'exists': False}), 404
 #------------------------------Acount gestion--------------------------------------
