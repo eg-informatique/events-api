@@ -94,6 +94,12 @@ def patch_event(id):
 @app.delete('/event/<id>')
 def delete_event(id):
     event = Event.query.filter(Event.id == id).first_or_404()
+    img_url = event.img_url
+    file_path = img_url[28:]
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+    else:
+        return 500, {'ContentType':'application/json'}
     db.session.delete(event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
