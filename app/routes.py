@@ -101,8 +101,6 @@ def delete_event(id):
     file_path = f"/var/www/{img_url[30:]}"
     if os.path.isfile(file_path):
         os.remove(file_path)
-    else:
-        return Response({file_path}), 404, {'ContentType':'application/json'}
     db.session.delete(event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
