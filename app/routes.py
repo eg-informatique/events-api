@@ -99,7 +99,7 @@ def delete_event(id):
     if os.path.isfile(file_path):
         os.remove(file_path)
     else:
-        return Response({'success':False}), 500, {'ContentType':'application/json'}
+        return Response({'success':False}), 404, {'ContentType':'application/json'}
     db.session.delete(event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
