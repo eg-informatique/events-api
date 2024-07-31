@@ -135,10 +135,10 @@ def post_venue():
                       phone=data["phone"]
                       )
     if len(Venue.query.filter(Venue.name == data["name"]).all()) > 0:
-        return Response({'That venue already exists, try to patch this venue if the infos are not up to date'}), 409, {'ContentType':'application/json'}
+        return jsonify({'Name Conflict':True}), 409
     db.session.add(new_venue)
     db.session.commit()
-    return Response({'success':True}), 200, {'ContentType':'application/json'} 
+    return jsonify({'success':True}), 200 
 
 @app.patch('/venue/<id>')
 def patch_venue(id):
