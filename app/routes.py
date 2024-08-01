@@ -260,4 +260,4 @@ def appUser_list(id):
         data = jsonify(i.toDict())
         userList.append(data.app_user)
 
-    return Response(userList), 200, {'ContentType':'application/json'}
+    return Response({userList:True}), 200, {'ContentType':'application/json'}
