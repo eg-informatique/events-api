@@ -255,16 +255,17 @@ def reserve_event(eventId, usrId):
 @app.get('/app_user_list/<id>')
 def appUser_list(id):
     reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
+    if len(reservationList) == 0:
+        return 204
     userList = [i.toDict().get("app_user") for i in reservationList]
 
-    return jsonify(userList)
+    return jsonify(userList), 200
 
 @app.get('/event_list/<id>')
 def event_list(id):
-    reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
-    userList = []
-    for i in reservationList:
-        data = i.toDict()
-        userList.append(data.get("app_user"))
+    reservationList = Events_AppUsers.query.filter(Events_AppUsers.app_user == id).all()
+    if len(reservationList) == 0:
+        return 204
+    eventList = [i.toDict().get("event") for i in reservationList]
 
-    return jsonify(userList)
+    return jsonify(eventList), 200
