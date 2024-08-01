@@ -119,7 +119,7 @@ class Events_AppUsers(db.model):
     # Event related to the user
     event = Column(UUID, ForeignKey('event.id'))
     # User related to the event
-    app_user = Column(UUID, ForeignKey('AppUser.id'))
+    app_user = Column(UUID, ForeignKey('app_user.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
