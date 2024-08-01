@@ -238,32 +238,27 @@ def verify_user():
         return Response({'authenticated':False}), 401,{'ContentType': 'application/json'}
 
 
-#------------------------------Img Upload--------------------------------------
+#------------------------------Event reservation--------------------------------------
 
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
+@app.post('/reserve')
+def reserve_event():
+    data = request.get_json()
+    new_reservation = Events_AppUsers(
+        event = data["eventId"],
+        app_user = data["app_userId"]
+    )
 
-    # Vérifier la présence de la partie fichier dans la requête
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
+    db.session.add(new_reservation)
+    db.session.commit()
+    return Response({'success':True}), 200, {'ContentType':'application/json'}
 
-    file = request.files['file']
-    user_uuid = request.form.get('user_uuid')
+@app.get('/app_user_list/<id>')
+def appUser_list(id):
+    reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
+    userList = []
+    for i in reservationList:
+        data = i.toDict()
+        userList.append(data.app_user)
 
-    # Vérifier la validité du fichier et de l'UUID utilisateur
-    if not file or file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-
-    if file:
-        # Générer un nom de fichier avec un suffixe unique
-        ext = os.path.splitext(file.filename)[1]  # Obtenir l'extension du fichier
-        unique_filename = f"{os.path.splitext(file.filename)[0]}_{uuid.uuid4().hex}{ext}"
-        
-        filename = secure_filename(unique_filename)
-        file_path = os.path.join('/var/www/', filename)
-        file.save(file_path)
-        file_url = f"https://events-api.org/static/{filename}"
-        return jsonify({"url": file_url}), 200
-
-    return jsonify({"error": "Invalid request"}), 400
+    return Response(userList), 200, {'ContentType':'application/json'}

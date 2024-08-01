@@ -12,6 +12,7 @@ class Venue(db.Model):
     Event venue
     
     See https://schema.org/EventVenue
+
     """
     __tablename__ = "venue"
 
@@ -33,7 +34,6 @@ class Venue(db.Model):
     # Phone number of the venue
     phone = Column(String(64), nullable=False)
     # TODO: add location field (latitude and longitude) -> see PostGIS extension
-    # events = db.relationship('Event', backref='venue')
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
@@ -44,6 +44,7 @@ class AppUser(db.Model):
     App User
 
     See => https://schema.org/Person
+
     """
     
     __tablename__ = "app_user"
@@ -77,6 +78,7 @@ class Event(db.Model):
     Event 
 
     See https://schema.org/Event
+
     """
     __tablename__="event"
 
@@ -102,6 +104,22 @@ class Event(db.Model):
     #Organizer of the event
     organizer = Column(UUID, ForeignKey('app_user.id'))
     
+
+    def toDict(self):
+        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+    
+class Events_AppUsers(db.model):
+    """
+    Many to many relation ship between AppUser and Event
+
+    """
+    __tablename__="events_app_users"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid64, nullable=False)
+    # Event related to the user
+    event = Column(UUID, ForeignKey('event.id'))
+    # User related to the event
+    app_user = Column(UUID, ForeignKey('AppUser.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
