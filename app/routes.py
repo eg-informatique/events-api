@@ -258,7 +258,6 @@ def appUser_list(id):
     userList = []
     for i in reservationList:
         data = i.toDict()
-        return data
-        #userList.append(data.get(app_user))
+        userList.append(data.get("app_user"))
 
     return jsonify(userList)
