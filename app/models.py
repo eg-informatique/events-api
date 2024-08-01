@@ -115,7 +115,7 @@ class Events_AppUsers(db.Model):
     """
     __tablename__="events_app_users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid64, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     # Event related to the user
     event = Column(UUID, ForeignKey('event.id'))
     # User related to the event
