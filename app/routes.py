@@ -257,7 +257,7 @@ def appUser_list(id):
     reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
     userList = []
     for i in reservationList:
-        data = jsonify(i.toDict())
+        data = i.toDict()
         userList.append(data.app_user)
 
     return jsonify(userList)
