@@ -245,8 +245,8 @@ def verify_user():
 def reserve_event():
     data = request.get_json()
     new_reservation = Events_AppUsers(
-        event = data["eventId"],
-        app_user = data["app_userId"]
+        event = int(data["eventId"]),
+        app_user = int(data["app_userId"])
     )
 
     db.session.add(new_reservation)
