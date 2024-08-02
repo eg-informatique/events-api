@@ -241,11 +241,12 @@ def verify_user():
 #------------------------------Event reservation--------------------------------------
 
 
-@app.post('/reserve/<eventId>/<usrId>')
-def reserve_event(eventId, usrId):
+@app.post('/reserve/<eventId>/<usrId>/<nb_tickets>')
+def reserve_event(eventId, usrId, nb_tickets):
     new_reservation = Events_AppUsers(
         event = eventId,
-        app_user = usrId
+        app_user = usrId,
+        nb_tickets = nb_tickets
     )
 
     db.session.add(new_reservation)
