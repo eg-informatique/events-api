@@ -246,6 +246,8 @@ def reserve_event(eventId, usrId, nb_tickets):
     is_reserve_exists = Events_AppUsers.query.filter(Events_AppUsers.event == eventId and Events_AppUsers == usrId).first()
     if is_reserve_exists:
         is_reserve_exists.nb_tickets += 1
+        db.session.commit()
+        return Response({'success':True}), 200, {'ContentType':'application/json'}
     else:
         new_reservation = Events_AppUsers(
             event = eventId,
@@ -253,9 +255,9 @@ def reserve_event(eventId, usrId, nb_tickets):
             nb_tickets = nb_tickets
         )
 
-    db.session.add(new_reservation)
-    db.session.commit()
-    return Response({'success':True}), 200, {'ContentType':'application/json'}
+        db.session.add(new_reservation)
+        db.session.commit()
+        return Response({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.get('/app_user_list/<id>')
 def appUser_list(id):
