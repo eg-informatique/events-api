@@ -245,7 +245,7 @@ def verify_user():
 def reserve_event(eventId, usrId, nb_tickets):
     is_reserve_exists = Events_AppUsers.query.filter(Events_AppUsers.event == eventId and Events_AppUsers == usrId).first()
     if is_reserve_exists:
-        is_reserve_exists.nb_tickets += nb_tickets
+        is_reserve_exists.nb_tickets += int(nb_tickets)
         db.session.commit()
         return Response({'success':True}), 200, {'ContentType':'application/json'}
     else:
