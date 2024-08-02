@@ -36,3 +36,13 @@ CREATE TABLE event (
     FOREIGN KEY (venue) REFERENCES venue (id),
     FOREIGN KEY (organizer) REFERENCES app_user (id)
 );
+
+CREATE TABLE events_app_users (
+    id uuid DEFAULT gen_random_uuid(),
+    event uuid NOT NULL,
+    app_user uuid NOT NULL,
+    nb_tickets INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (event) REFERENCES event (id),
+    FOREIGN KEY (app_user) REFERENCES app_user (id)
+);

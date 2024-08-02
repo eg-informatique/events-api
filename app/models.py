@@ -120,6 +120,8 @@ class Events_AppUsers(db.Model):
     event = Column(UUID, ForeignKey('event.id'))
     # User related to the event
     app_user = Column(UUID, ForeignKey('app_user.id'))
+    #Numbre of tickets of the user
+    nb_tickets = Column(Integer, nullable=False)
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
