@@ -4,6 +4,7 @@ from flask import Flask, Response, request, render_template, redirect, jsonify, 
 from werkzeug.utils import secure_filename
 import os
 import uuid
+from sqlalchemy import or_
 
 
 from .models import *
@@ -22,7 +23,7 @@ def get_events():
     page = args.get('page') if 'page' in args else 0
     pages = int(page)*20
     events = Event.query.order_by(Event.start_datetime.asc()).offset(pages).limit(20).all()
-    searcb_query = args.get("search", "").strip()
+    search_query = args.get("search", "").strip()
     if search_query:
         events_query = events_query.filter(
             or_(
@@ -33,6 +34,7 @@ def get_events():
     response = []
     for event in events : response.append(event.toDict())
     return jsonify(response)
+
 
 @app.post('/event')
 def add_event():
