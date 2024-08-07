@@ -129,9 +129,9 @@ def get_venues():
     if search_query:
         venue_query = venue_query.filter(
             or_(
-                Venue.name(f'%{search_query}%'),
-                Venue.address(f'%{search_query}%'),
-                Venue.city(f'%{search_query}%')
+                Venue.name.ilike(f'%{search_query}%'),
+                Venue.address.ilike(f'%{search_query}%'),
+                Venue.city.ilike(f'%{search_query}%')
             )
         )
     venue_query = venue_query.offset(pages).limit(6)
