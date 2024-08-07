@@ -125,8 +125,9 @@ def get_venues():
     page = args.get('page') if 'page' in args else 0
     pages = int(page)*8
     search_query = args.get("search", "").strip()
+    venue_query = Venue.query
     if search_query:
-        venue_query = Venue.query.filter(
+        venue_query = venue_query.filter(
             or_(
                 Venue.name(f'%{search_query}%'),
                 Venue.address(f'%{search_query}%'),
