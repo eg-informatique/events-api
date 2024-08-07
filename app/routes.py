@@ -35,9 +35,7 @@ def get_events():
     events = events_query.all()
     response = []
     for event in events : response.append(event.toDict())
-    total_events = Event.query.all()
-    events_numner = {"num":len(total_events)}
-    return jsonify(response), jsonify(events_numner)
+    return jsonify(response)
 
 
 @app.post('/event')
@@ -118,6 +116,11 @@ def delete_event(id):
     db.session.delete(event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
+
+@app.get('nb_events')
+def get_nb_events():
+    all_events = Event.query.all()
+    return Response("nb":len(all_events)), 200
 
 #------------------------------Venue------------------------------------------
 
