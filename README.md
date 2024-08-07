@@ -66,8 +66,10 @@ sudo -u postgres psql
 ---
 \c events_db
 
+```
 Copy [this code] (app/SQL Tables)
 
+```
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 ---
 
@@ -124,8 +126,10 @@ CREATE DATABASE events_db;
 CREATE USER admin WITH ENCRYPTED PASSWORD 'YOUR_PASSWORD';
 \c events_db;
 
+```
 Copy [this code] (app/SQL Tables)
 
+```
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 \q
 
