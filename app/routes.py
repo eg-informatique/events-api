@@ -120,7 +120,7 @@ def delete_event(id):
 @app.get('/nb_events')
 def get_nb_events():
     all_events = Event.query.all()
-    return Response({len(all_events):True}), 200
+    return Response({f"{len(all_events)}":True}), 200
 
 #------------------------------Venue------------------------------------------
 
