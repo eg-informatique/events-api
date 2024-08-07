@@ -35,7 +35,8 @@ def get_events():
     events = events_query.all()
     response = []
     for event in events : response.append(event.toDict())
-    return jsonify(response)
+    total_events = Event.query.all()
+    return jsonify(response), len(total_events)
 
 
 @app.post('/event')
