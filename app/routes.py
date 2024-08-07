@@ -119,7 +119,7 @@ def delete_event(id):
 
 #------------------------------Venue------------------------------------------
 
-@app.route('/venues')
+@app.get('/venues')
 def get_venues():
     args = request.args
     page = args.get('page') if 'page' in args else 0
