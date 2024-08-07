@@ -21,7 +21,7 @@ def index():
 def get_events():
     args = request.args
     page = args.get('page') if 'page' in args else 0
-    pages = int(page)*20
+    pages = int(page)*15
     events_query = Event.query.order_by(Event.start_datetime.asc())
     search_query = args.get("search", "").strip()
     if search_query:
@@ -31,7 +31,7 @@ def get_events():
                 Event.description.ilike(f'%{search_query}%')
             )
         )
-    events_query = events_query.offset(pages).limit(20)
+    events_query = events_query.offset(pages).limit(15)
     events = events_query.all()
     response = []
     for event in events : response.append(event.toDict())
@@ -123,11 +123,21 @@ def delete_event(id):
 def get_venues():
     args = request.args
     page = args.get('page') if 'page' in args else 0
-    pages = int(page)*20
-    venues = Venue.query.offset(pages).limit(20).all()
+    pages = int(page)*8
+    search_query = args.get("search", "").strip()
+    if search_query:
+        venue_query = Venue.query.filter(
+            or_(
+                Venue.name(f'%{search_query}%'),
+                Venue.address(f'%{search_query}%'),
+                Venue.city(f'%{search_query}%')
+            )
+        )
+    venue_query = venue_query.offset(pages).limit(6)
+    venues = venue_query.all()
     response = []
     for venue in venues : response.append(venue.toDict())
-    return jsonify(response)
+    return jsonify(response), 200
 
 @app.route('/venue/<id>')
 def get_venue(id):
