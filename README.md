@@ -66,54 +66,7 @@ sudo -u postgres psql
 ---
 \c events_db
 
-CREATE TABLE venue (
-    id uuid DEFAULT gen_random_uuid(),
-    name VARCHAR(64) NOT NULL,
-    url TEXT DEFAULT NULL,
-    address VARCHAR(64) DEFAULT NULL,
-    zipcode VARCHAR(64) NOT NULL,
-    city VARCHAR(64) NOT NULL,  
-    country VARCHAR(64) NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    phone VARCHAR(16) NOT NULL,
-    PRIMARY KEY (id) 
-);
-
-CREATE TABLE app_user (
-    id uuid DEFAULT gen_random_uuid(),
-    first_name VARCHAR(64) NOT NULL,
-    last_name VARCHAR(64) NOT NULL,
-    username VARCHAR(16) NOT NULL,
-    birth_date DATE NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    mobile VARCHAR(16) NOT NULL,
-    password_hash VARCHAR(256) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE event (
-    id uuid DEFAULT gen_random_uuid(),
-    title VARCHAR(256) NOT NULL,
-    img_url VARCHAR(256) DEFAULT NULL,  
-    start_datetime TIMESTAMPTZ NOT NULL,
-    end_datetime TIMESTAMPTZ NOT NULL,  
-    created TIMESTAMPTZ NOT NULL,
-    update TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    venue uuid NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (venue) REFERENCES venue (id)
-);
-
-CREATE TABLE event_details (
-    id uuid DEFAULT gen_random_uuid(),
-    event uuid NOT NULL,
-    prices JSON DEFAULT NULL,
-    description TEXT NOT NULL,
-    organizer uuid NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (event) REFERENCES event (id),
-    FOREIGN KEY (organizer) REFERENCES app_user (id)
-);
+Copy [this code] (app/SQL Tables)
 
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 ---
@@ -170,47 +123,8 @@ Setup the database
 CREATE DATABASE events_db;
 CREATE USER admin WITH ENCRYPTED PASSWORD 'YOUR_PASSWORD';
 \c events_db;
-CREATE TABLE venue (
-    id uuid DEFAULT gen_random_uuid(),
-    name VARCHAR(64) NOT NULL,
-    url TEXT DEFAULT NULL,
-    address VARCHAR(64) DEFAULT NULL,
-    zipcode VARCHAR(64) NOT NULL,
-    city VARCHAR(64) NOT NULL,  
-    country VARCHAR(64) NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    phone VARCHAR(16) NOT NULL,
-    PRIMARY KEY (id) 
-);
 
-CREATE TABLE app_user (
-    id uuid DEFAULT gen_random_uuid(),
-    first_name VARCHAR(64) NOT NULL,
-    last_name VARCHAR(64) NOT NULL,
-    username VARCHAR(16) NOT NULL,
-    birth_date DATE NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    mobile VARCHAR(16) NOT NULL,
-    password_hash VARCHAR(256) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE event (
-    id uuid DEFAULT gen_random_uuid(),
-    title VARCHAR(256) NOT NULL,
-    img_url TEXT DEFAULT NULL,  
-    start_datetime TIMESTAMPTZ NOT NULL,
-    end_datetime TIMESTAMPTZ NOT NULL,  
-    created TIMESTAMPTZ NOT NULL,
-    update TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    prices JSON DEFAULT NULL,
-    description TEXT NOT NULL,
-    venue uuid NOT NULL,
-    organizer uuid NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (venue) REFERENCES venue (id),
-    FOREIGN KEY (organizer) REFERENCES app_user (id)
-);
+Copy [this code] (app/SQL Tables)
 
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
 \q
