@@ -127,7 +127,7 @@ CREATE USER admin WITH ENCRYPTED PASSWORD 'YOUR_PASSWORD';
 \c events_db;
 
 ```
-Copy [this code](app/SQL Tables)
+Copy [this code](app/routes.py)
 
 ```
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
