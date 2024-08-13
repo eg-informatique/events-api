@@ -21,7 +21,7 @@ def index():
 def get_events():
     args = request.args
     page = args.get('page') if 'page' in args else 0
-    pages = int(page)*6
+    pages = int(page)*12
     events_query = Event.query.order_by(Event.start_datetime.asc())
     search_query = args.get("search", "").strip()
     if search_query and search_query != "":
@@ -31,7 +31,7 @@ def get_events():
                 Event.description.ilike(f'%{search_query}%')
             )
         )
-    events_query = events_query.offset(pages).limit(6)
+    events_query = events_query.offset(pages).limit(12)
     events = events_query.all()
     response = []
     for event in events : response.append(event.toDict())
