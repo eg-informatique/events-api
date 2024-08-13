@@ -24,6 +24,7 @@ def get_events():
     pages = int(page-1)*15
     events_query = Event.query.order_by(Event.start_datetime.asc())
     search_query = args.get("search", "").strip()
+    return search_query
     if search_query and search_query != "":
         events_query = events_query.filter(
             or_(
