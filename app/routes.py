@@ -31,7 +31,7 @@ def get_events():
                 Event.description.ilike(f'%{search_query}%')
             )
         )
-    events_query = events_query.offset(pages).limit(15)
+    events_query = events_query.offset(pages).limit(6)
     events = events_query.all()
     response = []
     for event in events : response.append(event.toDict())
