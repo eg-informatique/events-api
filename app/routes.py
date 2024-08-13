@@ -21,7 +21,7 @@ def index():
 def get_events():
     args = request.args
     page = args.get('page') if 'page' in args else 0
-    pages = (int(page)-1)*15
+    pages = int(page)*15
     events_query = Event.query.order_by(Event.start_datetime.asc())
     search_query = args.get("search", "").strip()
     if search_query and search_query != "":
