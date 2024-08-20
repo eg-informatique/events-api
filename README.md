@@ -188,7 +188,7 @@ server {
                 add_header 'Access-Control-Allow-Origin' '*';
                 add_header 'Access-Control-Allow-Credentials' 'true';
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-                add_header 'Access-Control-Allow-Headers' 'DNT, User-Agent, X-Request-With, If-Modified-Since, C>
+                add_header 'Access-Control-Allow-Headers' 'DNT, User-Agent, X-Request-With, If-Modified-Since, Cache-Control, Content-Type, Range' always;
                 add_header 'Access-Control-Allow-Expose-Headers' 'Content-Lenght, Content-Range';
                 proxy_pass http://unix:home/tm/events-api/events-api.sock;
         }
