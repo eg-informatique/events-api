@@ -4,7 +4,7 @@ from flask import Flask, Response, request, render_template, redirect, jsonify, 
 from werkzeug.utils import secure_filename
 import os
 import uuid
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
 from .models import *
@@ -271,7 +271,7 @@ def verify_user():
 
 @app.post('/reserve/<eventId>/<usrId>/<nb_tickets>')
 def reserve_event(eventId, usrId, nb_tickets):
-    is_reserve_exists = Events_AppUsers.query.filter(Events_AppUsers.event == eventId and Events_AppUsers == usrId).first()
+    is_reserve_exists = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId, Events_AppUsers == usrId)).first()
     if is_reserve_exists:
         is_reserve_exists.nb_tickets += int(nb_tickets)
         db.session.commit()
