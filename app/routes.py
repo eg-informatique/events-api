@@ -291,7 +291,7 @@ def reserve_event(eventId, usrId, nb_tickets):
 def appUser_list(id):
     reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
     if len(reservationList) == 0:
-        return Response({"no user":True}), 404
+        return 404
     userList = [i.toDict().get("app_user") for i in reservationList]
 
     return jsonify(userList), 200
@@ -300,7 +300,7 @@ def appUser_list(id):
 def event_list(id):
     reservationList = Events_AppUsers.query.filter(Events_AppUsers.app_user == id).all()
     if len(reservationList) == 0:
-        return Response({"no event":True}), 404
+        return 404
     eventList = [i.toDict().get("event") for i in reservationList]
 
     return jsonify(eventList), 200
