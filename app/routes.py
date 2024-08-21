@@ -304,3 +304,9 @@ def event_list(id):
     eventList = [i.toDict().get("event") for i in reservationList]
 
     return jsonify(eventList), 200
+
+@app.get('event_nb_tickets/<eventId>/<usrId>')
+def get_nb_tickets(eventId, usrId):
+    reservation = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId), (Events_AppUsers.app_user == usrId)).first()
+    nb_tickets = reservation.toDict().get("nb_tickets")
+    return jsonify(nb_tickets), 200
