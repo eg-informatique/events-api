@@ -23,10 +23,14 @@ def get_events():
     page = args.get('page') if 'page' in args else 0
     pages = int(page)*12
     sort = args.get("sort")
+    date = args.get("d")
+    events_query = Event.query
+    if date:
+        events_query = events_query.filter(Event.start_datetime >= date)
     if sort == 'ascending':
-        events_query = Event.query.order_by(Event.start_datetime.asc())
+        events_query = events_query.order_by(Event.start_datetime.asc())
     else:
-        events_query = Event.query.order_by(Event.start_datetime.desc())
+        events_query = events_query.order_by(Event.start_datetime.desc())
     search_query = args.get("search", "").strip()
     if search_query and search_query != "":
         events_query = events_query.filter(
