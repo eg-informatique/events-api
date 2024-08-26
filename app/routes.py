@@ -26,6 +26,7 @@ def get_events():
     date = args.get("d")
     events_query = Event.query
     if date:
+        return jsonify(date)
         events_query = events_query.filter(Event.start_datetime >= date)
     if sort == 'ascending':
         events_query = events_query.order_by(Event.start_datetime.asc())
