@@ -24,10 +24,10 @@ def get_events():
     page = args.get('page') if 'page' in args else 0
     pages = int(page)*12
     sort = args.get("sort")
-    date = args.get("d")
+    date_str = args.get("d")
     events_query = Event.query
-    if date:
-        return jsonify(str(type(date)))
+    if date_str:
+        date = datetime.strptime(date_str, '%m/%d/%y')
         events_query = events_query.filter(Event.start_datetime >= date)
     if sort == 'ascending':
         events_query = events_query.order_by(Event.start_datetime.asc())
