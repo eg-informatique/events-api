@@ -27,7 +27,7 @@ def get_events():
     date_str = args.get("d")
     events_query = Event.query
     if date_str:
-        date = datetime.strptime(date_str, '%y/%d/%m')
+        date = datetime.strptime(date_str, '%y-%m-%d')
         events_query = events_query.filter(Event.start_datetime >= date)
     if sort == 'ascending':
         events_query = events_query.order_by(Event.start_datetime.asc())
