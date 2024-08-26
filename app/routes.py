@@ -22,7 +22,11 @@ def get_events():
     args = request.args
     page = args.get('page') if 'page' in args else 0
     pages = int(page)*12
-    events_query = Event.query.order_by(Event.start_datetime.asc())
+    sort = args.get("sort")
+    if sort == 'ascending':
+        events_query = Event.query.order_by(Event.start_datetime.asc())
+    else:
+        events_query = Event.query.order_by(Event.start_datetime.desc())
     search_query = args.get("search", "").strip()
     if search_query and search_query != "":
         events_query = events_query.filter(
@@ -30,7 +34,7 @@ def get_events():
                 Event.title.ilike(f'%{search_query}%'),
                 Event.description.ilike(f'%{search_query}%')
             )
-        )
+        )    
     events_query = events_query.offset(pages).limit(12)
     events = events_query.all()
     response = []
