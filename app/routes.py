@@ -1,4 +1,5 @@
 from app import app
+from datetime import datetime
 
 from flask import Flask, Response, request, render_template, redirect, jsonify, json
 from werkzeug.utils import secure_filename
@@ -26,7 +27,7 @@ def get_events():
     date = args.get("d")
     events_query = Event.query
     if date:
-        return jsonify(date)
+        return jsonify(type(date))
         events_query = events_query.filter(Event.start_datetime >= date)
     if sort == 'ascending':
         events_query = events_query.order_by(Event.start_datetime.asc())
