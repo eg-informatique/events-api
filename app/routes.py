@@ -1,15 +1,27 @@
 from app import app
 from datetime import datetime
 
-from flask import Flask, Response, request, render_template, redirect, jsonify, json
+from flask import Flask, Response, request, render_template, redirect, jsonify, abort, json
 from werkzeug.utils import secure_filename
 import os
 import uuid
+import jwt
 from sqlalchemy import or_, and_
+
 
 
 from .models import *
 
+JWT_SECRET = 'polosecrets'
+
+def verify_jwt(token):
+    try:
+        decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return decoded
+    except jwt.ExpiredSignatureError:
+        abort(401, "Token expired")
+    except jwt.InvalidTokenError:
+        abort(401, "Invalid token")
 
 @app.route('/')
 @app.route('/index')
@@ -205,13 +217,20 @@ def delete_venue(id):
 
 @app.get('/users')
 def get_users():
-    args = request.args
-    page = args.get('page') if 'page' in args else 0
-    pages = int(page)*20
-    users = AppUser.query.offset(pages).limit(20).all()
-    response = []
-    for user in users : response.append(user.toDict())
-    return jsonify(response)
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(" ")[1]
+        decoded_token = verify_jwt(token)
+        if decoded_token:
+            args = request.args
+            page = args.get('page') if 'page' in args else 0
+            pages = int(page)*20
+            users = AppUser.query.offset(pages).limit(20).all()
+            response = []
+            for user in users : response.append(user.toDict())
+            return jsonify(response)
+    return abort(401, "Authorization required")
+    
 
 @app.route('/user/<id>')
 def get_user(id):
