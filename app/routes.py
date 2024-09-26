@@ -37,6 +37,7 @@ def get_events():
     pages = int(page)*12
     sort = args.get("sort")
     date_str = args.get("d")
+    event_creator = args.get("c")
     events_query = Event.query
     if date_str:
         date = datetime.strptime(date_str, '%Y-%m-%d').date()
@@ -52,7 +53,9 @@ def get_events():
                 Event.title.ilike(f'%{search_query}%'),
                 Event.description.ilike(f'%{search_query}%')
             )
-        )    
+        )
+    if event_creator:
+        events_query = events_query.filter(Event.organizer = event_creator)
     events_query = events_query.offset(pages).limit(12)
     events = events_query.all()
     response = []
