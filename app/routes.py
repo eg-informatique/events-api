@@ -55,7 +55,7 @@ def get_events():
             )
         )
     if event_creator:
-        events_query = events_query.filter(Event.organizer = event_creator)
+        events_query = events_query.filter(Event.organizer == event_creator)
     events_query = events_query.offset(pages).limit(12)
     events = events_query.all()
     response = []
