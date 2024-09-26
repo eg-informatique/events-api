@@ -283,6 +283,7 @@ def getUserByEmail():
         return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email, 'first_name':user.first_name}})
     else: 
         return jsonify({'exists': False}), 404
+    
 #------------------------------Acount gestion--------------------------------------
 
 @app.post('/login')
@@ -300,7 +301,7 @@ def verify_user():
 
 @app.post('/reserve/<eventId>/<usrId>/<nb_tickets>')
 def reserve_event(eventId, usrId, nb_tickets):
-    is_reserve_exists = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId, Events_AppUsers == usrId)).first()
+    is_reserve_exists = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId, Events_AppUsers.app_user == usrId)).first()
     if is_reserve_exists:
         is_reserve_exists.nb_tickets += int(nb_tickets)
         db.session.commit()
