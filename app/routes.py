@@ -320,6 +320,13 @@ def reserve_event(eventId, usrId, nb_tickets):
         db.session.commit()
         return Response({'success':True}), 200, {'ContentType':'application/json'}
 
+app.patch('/reserve/<eventId>/<usrId>/<nb_tickets>')
+def edit_reservation(eventId, usrId, nb_tickets):
+    reservation = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId, Events_AppUsers.app_user == usrId)).first()
+    reservation.nb_tickets = nb_tickets
+    db.session.commit()
+    return Response({'success':True}), 202, {'ContentType':'application/json'}
+
 @app.get('/app_user_list/<id>')
 def appUser_list(id):
     reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
@@ -335,7 +342,6 @@ def event_list(id):
     if len(reservationList) == 0:
         return jsonify({'exists': False}), 404
     eventList = [i.toDict().get("event") for i in reservationList]
-
     return jsonify(eventList), 200
 
 @app.get('/event_nb_tickets/<eventId>/<usrId>')
