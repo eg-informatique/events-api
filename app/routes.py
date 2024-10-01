@@ -156,6 +156,7 @@ def get_venues():
     pages = int(page)*8
     search_query = args.get("search", "").strip()
     venue_query = Venue.query
+    venue_creator = args.get("c")
     if search_query:
         venue_query = venue_query.filter(
             or_(
@@ -164,6 +165,8 @@ def get_venues():
                 Venue.city.ilike(f'%{search_query}%')
             )
         )
+    if venue_creator:
+        venue_query = venue_query.filter(Venue.organizer == venue_creator)
     venue_query = venue_query.offset(pages).limit(6)
     venues = venue_query.all()
     response = []
