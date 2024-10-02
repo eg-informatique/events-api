@@ -33,7 +33,8 @@ class Venue(db.Model):
     email = Column(String(64), nullable=False)
     # Phone number of the venue
     phone = Column(String(64), nullable=False)
-    # TODO: add location field (latitude and longitude) -> see PostGIS extension
+    #Creator of the venue
+    creator = Column(UUID, ForeignKey('app_user.id'))
 
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
