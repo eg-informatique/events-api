@@ -166,7 +166,7 @@ def get_venues():
             )
         )
     if venue_creator:
-        venue_query = venue_query.filter(Venue.organizer == venue_creator)
+        venue_query = venue_query.filter(Venue.creator == venue_creator)
     venue_query = venue_query.offset(pages).limit(6)
     venues = venue_query.all()
     response = []
@@ -189,7 +189,8 @@ def post_venue():
                       city=data["city"],
                       country=data["country"],
                       email=data["email"],
-                      phone=data["phone"]
+                      phone=data["phone"],
+                      creator = data["creator"]
                       )
     if len(Venue.query.filter(Venue.name == data["name"]).all()) > 0:
         return jsonify({'Name Conflict':True}), 409
