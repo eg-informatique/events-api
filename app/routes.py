@@ -204,7 +204,7 @@ def patch_venue(id):
     venue = Venue.query.filter(Venue.id == id).first_or_404()
     venue.name = data["name"]
     venue.url = data["url"]
-    venue.adress = data["adress"]
+    venue.address = data["address"]
     venue.zipcode = data["zipcode"]
     venue.city = data["city"]
     venue.country = data["country"]
