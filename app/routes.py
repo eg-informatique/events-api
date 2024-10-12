@@ -88,7 +88,7 @@ def add_event():
     try:
         new_event = Event(
             title=data["title"],
-            img_url=filee_url,
+            img_url=file_url,
             start_datetime=data["start_datetime"],
             end_datetim=data["end_datetime"],
             created=func.now(),
