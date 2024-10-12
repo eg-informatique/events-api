@@ -88,9 +88,9 @@ def add_event():
     try:
         new_event = Event(
             title=data["title"],
-            img_url=file_url,
+            img_url=filee_url,
             start_datetime=data["start_datetime"],
-            end_datetime=data["end_datetime"],
+            end_datetim=data["end_datetime"],
             created=func.now(),
             prices={"major":data["major_price"], "minor":data["minor_price"], "currency":"CHF"},
             description=data["description"],
@@ -215,7 +215,10 @@ def patch_venue(id):
 
 @app.delete('/venue/<id>')
 def delete_venue(id):
+    events = Event.query.filter(venue == id).all()
     venue = Venue.query.filter(Venue.id == id).first_or_404()
+    db.session.delete(events)
+    db.session.commit()
     db.session.delete(venue)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
