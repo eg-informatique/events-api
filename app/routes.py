@@ -215,7 +215,7 @@ def patch_venue(id):
 
 @app.delete('/venue/<id>')
 def delete_venue(id):
-    events = Event.query.filter(venue == id).all()
+    events = Event.query.filter(Event.venue == id).all()
     venue = Venue.query.filter(Venue.id == id).first_or_404()
     db.session.delete(events)
     db.session.commit()
