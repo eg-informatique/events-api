@@ -90,7 +90,7 @@ def add_event():
             title=data["title"],
             img_url=file_url,
             start_datetime=data["start_datetime"],
-            end_datetim=data["end_datetime"],
+            end_datetime=data["end_datetime"],
             created=func.now(),
             prices={"major":data["major_price"], "minor":data["minor_price"], "currency":"CHF"},
             description=data["description"],
