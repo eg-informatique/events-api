@@ -217,9 +217,10 @@ def patch_venue(id):
 def delete_venue(id):
     events = Event.query.filter(Event.venue == id).all()
     venue = Venue.query.filter(Venue.id == id).first_or_404()
-    for i in events:
-        db.session.delete(i)
-        db.session.commit()
+    if events:
+        for i in events:
+            db.session.delete(i)
+            db.session.commit()
     db.session.delete(venue)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
