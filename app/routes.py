@@ -189,8 +189,7 @@ def post_venue():
                       city=data["city"],
                       country=data["country"],
                       email=data["email"],
-                      phone=data["phone"],
-                      creator = data["creator"]
+                      phone=data["phone"]
                       )
     if len(Venue.query.filter(Venue.name == data["name"]).all()) > 0:
         return jsonify({'Name Conflict':True}), 409
