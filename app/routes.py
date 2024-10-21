@@ -133,11 +133,16 @@ def patch_event(id):
 
 @app.delete('/event/<id>')
 def delete_event(id):
+    reservations = Events_AppUsers.query.filter(Events_AppUsers.event == id).all()
     event = Event.query.filter(Event.id == id).first_or_404()
     img_url = event.img_url
     file_path = f"/var/www/{img_url[30:]}"
     if os.path.isfile(file_path):
         os.remove(file_path)
+    if reservations:
+        for reservation in reservations:
+            db.session.delete(reservation)
+            db.session.commit()
     db.session.delete(event)
     db.session.commit()
     return Response({'success':True}), 200, {'ContentType':'application/json'} 
@@ -218,8 +223,8 @@ def delete_venue(id):
     events = Event.query.filter(Event.venue == id).all()
     venue = Venue.query.filter(Venue.id == id).first_or_404()
     if events:
-        for i in events:
-            db.session.delete(i)
+        for event in events:
+            db.session.delete(event)
             db.session.commit()
     db.session.delete(venue)
     db.session.commit()
