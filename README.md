@@ -67,7 +67,7 @@ sudo -u postgres psql
 \c events_db
 
 ```
-Copy [this code](app/SQL Tables)
+Copy [this code](https://github.com/eg-informatique/events-api/blob/main/app/SQL%20Tables)
 
 ```
 GRANT insert, update, select, delete ON ALL tables IN schema public TO admin;
