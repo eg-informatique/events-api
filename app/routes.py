@@ -289,7 +289,7 @@ def post_user():
 
 def send_verification_email(email, token, id):
     try:
-        verification_link = f"https://swiss-events.org/verify-email?usrId={id}&id={token}"
+        verification_link = f"https://swiss-events.org/verify-email?id={id}&token={token}"
         subject = "Verify Your Email Address"
         
         
@@ -400,3 +400,17 @@ def get_nb_tickets(eventId, usrId):
     reservation = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId), (Events_AppUsers.app_user == usrId)).first()
     nb_tickets = reservation.toDict().get("nb_tickets")
     return jsonify(nb_tickets), 200
+ 
+@app.post('/verify-email')
+def verify_email():
+    id = request.args.get('id')
+    token = request.get_json()
+
+    user = AppUser.query.filter(AppUser.id == id).first()
+    if user.email_token == token:
+        user.verify = True
+        db.session.commit()
+        return Response({'success':True}), 202, {'ContentType':'application/json'}
+    else:
+        return Response({'unsuccess':True}), 400, {'ContentType':'application/json'}
+
