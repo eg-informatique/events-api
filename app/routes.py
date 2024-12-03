@@ -298,7 +298,8 @@ def send_verification_email(email, token, id):
 
         msg = Message(subject, recipients=[email], body=body)
         mail.send(msg)
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 @app.patch('/user/<id>')
