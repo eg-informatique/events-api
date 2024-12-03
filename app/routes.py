@@ -411,7 +411,7 @@ def verify_email():
     if user.email_token == token:
         user.verify = True
         db.session.commit()
-        return 202, {'ContentType':'application/json'}
+        return jsonify('ok'), 202, {'ContentType':'application/json'}
     else:
         return Response({'unsuccess':True}), 400, {'ContentType':'application/json'}
 
