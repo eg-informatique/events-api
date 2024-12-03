@@ -1,6 +1,5 @@
 from app import app
 from datetime import datetime
-
 from flask import Flask, Response, request, render_template, redirect, jsonify, abort, json
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
@@ -8,6 +7,7 @@ import os
 import uuid
 import jwt
 from sqlalchemy import or_, and_
+import sys
 
 
 
@@ -300,6 +300,7 @@ def send_verification_email(email, token, id):
         mail.send(msg)
     except Exception as e:
         print(e)
+        sys.stdout.flush()
         return False
 
 @app.patch('/user/<id>')
