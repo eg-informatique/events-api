@@ -407,6 +407,7 @@ def verify_email():
     token = request.get_json()
 
     user = AppUser.query.filter(AppUser.id == id).first()
+    return user.email_user
     if user.email_token == token:
         user.verify = True
         db.session.commit()
