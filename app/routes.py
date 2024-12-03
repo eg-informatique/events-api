@@ -404,10 +404,11 @@ def get_nb_tickets(eventId, usrId):
 @app.post('/verify-email')
 def verify_email():
     id = request.args.get('id')
-    token = request.get_json('token')
+    token = request.args.get('token')
+    token = request.get_json()
 
     user = AppUser.query.filter(AppUser.id == id).first_or_404()
-    return user.email_token
+    return jsonify(user.email_token), 200
     if user.email_token == token:
         user.verify = True
         db.session.commit()
