@@ -61,6 +61,8 @@ class AppUser(db.Model):
     password_hash = Column(String(256), nullable=False)
     # Email verification status
     verify = Column(Boolean, nullable=False, default=False)
+    # Email verification token
+    email_token = db.Column(db.String(36), unique=True, default=lambda: str(uuid.uuid4())) 
 
     @property
     def password(self):

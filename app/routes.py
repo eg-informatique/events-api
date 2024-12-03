@@ -2,6 +2,7 @@ from app import app
 from datetime import datetime
 
 from flask import Flask, Response, request, render_template, redirect, jsonify, abort, json
+from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
 import os
 import uuid
@@ -11,6 +12,8 @@ from sqlalchemy import or_, and_
 
 
 from .models import *
+
+mail = Mail()
 
 JWT_SECRET = 'polosecrets'
 
@@ -22,6 +25,8 @@ def verify_jwt(token):
         abort(401, "Token expired")
     except jwt.InvalidTokenError:
         abort(401, "Invalid token")
+
+
 
 @app.route('/')
 @app.route('/index')
@@ -263,12 +268,31 @@ def post_user():
                       email=data["email"],
                       password=data["password"]
                       )
+    
     if len(AppUser.query.filter(AppUser.email == data["email"]).all()) > 0:
         return Response({'Email already used'}), 409, {'ContentType':'application/json'}
     if len(AppUser.query.filter(AppUser.first_name == data["first_name"]).all()) > 0 and len(AppUser.query.filter(AppUser.last_name == data["last_name"]).all()):
         return Response({'This user already exists'}), 409, {'ContentType':'application/json'}
+    
     db.session.add(new_user)
     db.session.commit()
+
+    try:
+        send_verification_email(new_user.email, new_user.email_token)
+    except Exception as e:
+        db.session.rollback()
+        return Response({'message': 'Error sending email'}, status=500, mimetype='application/json')
+
+def send_verification_email(email, token):
+    verification_link = f"https://swiss-events.org/verify-email?usrEmail={email}&id={token}"
+    subject = "Verify your email address"
+    body = f"Please click the link below to verify your email address:\n\n{verification_link}"
+
+    msg = Message(subject, recipients=[email], body=body)
+    mail.send(msg)
+
+    
+
     return Response({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.patch('/user/<id>')

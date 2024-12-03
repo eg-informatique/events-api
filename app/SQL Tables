@@ -4,6 +4,8 @@ CREATE TABLE app_user (
     last_name VARCHAR(64),
     email VARCHAR(64) NOT NULL,
     password_hash VARCHAR(256) NOT NULL,
+    verify BOOLEAN NOT NULL,
+    email_token VARCHAR(36),
     PRIMARY KEY (id)
 );
 
