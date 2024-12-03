@@ -404,7 +404,7 @@ def get_nb_tickets(eventId, usrId):
 @app.post('/verify-email')
 def verify_email():
     id = request.args.get('id')
-    token = request.get_json()
+    token = request.get_json('token')
 
     user = AppUser.query.filter(AppUser.id == id).first_or_404()
     return user.email_token
