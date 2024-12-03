@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .header img {
+            max-width: 120px;
+        }
+        .content {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .content h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        .content p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .footer a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://example.com/logo.png" alt="Swiss Events Logo">
+        </div>
+        <div class="content">
+            <h1>Verify Your Email Address</h1>
+            <p>Please click the button below to verify your email address and activate your account.</p>
+            <a href="{{ verification_link }}" class="button">Verify Email</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Swiss Events. All rights reserved.</p>
+            <p>
+                <a href="https://github.com/eg-informatique/events-app">Repo</a> |
+                <a href="https://swiss-events.org/terms_service">Terms of Service</a> |
+                <a href="https://swiss-events.org/about">About Us</a> |
+                <a href="https://swiss-events.org/privacy_policy">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

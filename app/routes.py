@@ -287,20 +287,27 @@ def post_user():
         db.session.rollback()
         return jsonify(e), 500, {'application/json'}
 
-
-def send_verification_email(email, token, id):
-
+def send_verification_email(email, token):
     if AppUser.query.filter(AppUser.id == id).first():
-        False
+        return False
     try:
         verification_link = f"https://swiss-events.org/verify-email?usrEmail={email}&id={token}"
-        subject = "Verify your email address"
-        body = f"Please click the link below to verify your email address:\n\n{verification_link}"
+        subject = "Verify Your Email Address"
+        
+        
+        with open("./email_template.html", "r") as file:
+            html_template = file.read()
+        html_body = html_template.replace("{{ verification_link }}", verification_link)
 
-        msg = Message(subject, recipients=[email], body=body)
+        
+        msg = Message(subject, recipients=[email])
+        msg.body = "Please verify your email using the following link: " + verification_link
+        msg.html = html_body
+
+        
         mail.send(msg)
     except Exception as e:
-        return str(e)
+        return False, str(e)
     return True
 
 @app.patch('/user/<id>')
