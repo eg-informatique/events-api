@@ -278,20 +278,22 @@ def post_user():
     db.session.commit()
 
     try:
-        send_verification_email(new_user.email, new_user.email_token)
+        send_verification_email(new_user.email, new_user.email_token, new_user.id)
     except Exception as e:
         db.session.rollback()
-        return Response({'message': 'Error sending email'}, status=500, mimetype='application/json')
+        return Response({ e: True}, status=500, mimetype='application/json')
 
-def send_verification_email(email, token):
+def send_verification_email(email, token, id):
+
+    if AppUser.query.filter(AppUser.id == id).first():
+        return 409, {'ContentType':'application/json'}
+    
     verification_link = f"https://swiss-events.org/verify-email?usrEmail={email}&id={token}"
     subject = "Verify your email address"
     body = f"Please click the link below to verify your email address:\n\n{verification_link}"
 
     msg = Message(subject, recipients=[email], body=body)
     mail.send(msg)
-
-    
 
     return Response({'success':True}), 200, {'ContentType':'application/json'}
 
