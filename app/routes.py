@@ -279,7 +279,7 @@ def post_user():
 
     try:
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
-        if response: 
+        if response[0]: 
             return Response({f"success":True}), 200, {'ContentType':'application/json'}
         else:
             return Response({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500, {'ContentType':'application/json'}
@@ -288,8 +288,6 @@ def post_user():
         return Response({f'{e}': True}), 500, {'application/json'}
 
 def send_verification_email(email, token, id):
-    if AppUser.query.filter(AppUser.id == id).first():
-        return False
     try:
         verification_link = f"https://swiss-events.org/verify-email?usrId={id}&id={token}"
         subject = "Verify Your Email Address"
@@ -307,8 +305,8 @@ def send_verification_email(email, token, id):
         
         mail.send(msg)
     except Exception as e:
-        return (False, str(e))
-    return True
+        return [False, str(e)]
+    return [True, '123']
 
 @app.patch('/user/<id>')
 def patch_user(id):
