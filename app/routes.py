@@ -13,7 +13,7 @@ import sys
 
 from .models import *
 
-mail = Mail()
+mail = Mail(app)
 
 JWT_SECRET = 'polosecrets'
 
