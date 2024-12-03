@@ -283,6 +283,8 @@ def post_user():
         db.session.rollback()
         return jsonify(e) ,500, {'application/json'}
 
+    return Response({'success':True}), 200, {'ContentType':'application/json'}
+
 def send_verification_email(email, token, id):
 
     if AppUser.query.filter(AppUser.id == id).first():
