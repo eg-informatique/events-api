@@ -281,7 +281,7 @@ def post_user():
         send_verification_email(new_user.email, new_user.email_token, new_user.id)
     except Exception as e:
         db.session.rollback()
-        return Response({ e: True}, status=500, mimetype='application/json')
+        return jsonify(e) ,500, {'application/json'}
 
 def send_verification_email(email, token, id):
 
