@@ -282,7 +282,7 @@ def post_user():
         if response: 
             return Response({f"success":True}), 200, {'ContentType':'application/json'}
         else:
-            return Response({f"Unsuccess - In mail sending, error: {response}":True}), 500, {'ContentType':'application/json'}
+            return Response({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500, {'ContentType':'application/json'}
     except Exception as e:
         db.session.rollback()
         return Response({f'{e}': True}), 500, {'application/json'}
@@ -307,7 +307,7 @@ def send_verification_email(email, token, id):
         
         mail.send(msg)
     except Exception as e:
-        return False, str(e)
+        return (False, str(e))
     return True
 
 @app.patch('/user/<id>')
