@@ -293,7 +293,7 @@ def send_verification_email(email, token, id):
         subject = "Verify Your Email Address"
         
         
-        with open("./email_template.html", "r") as file:
+        with open("/home/tm/events-api/app/email_template.html", "r") as file:
             html_template = file.read()
         html_body = html_template.replace("{{ verification_link }}", verification_link)
 
