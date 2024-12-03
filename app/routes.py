@@ -278,26 +278,28 @@ def post_user():
     db.session.commit()
 
     try:
-        send_verification_email(new_user.email, new_user.email_token, new_user.id)
+        if send_verification_email(new_user.email, new_user.email_token, new_user.id):
+            return Response({'success':True}), 200, {'ContentType':'application/json'}
+        else:
+            return Response({'Unsuccess':True}), 500, {'ContentType':'application/json'}
     except Exception as e:
         db.session.rollback()
         return jsonify(e) ,500, {'application/json'}
 
-    return Response({'success':True}), 200, {'ContentType':'application/json'}
 
 def send_verification_email(email, token, id):
 
     if AppUser.query.filter(AppUser.id == id).first():
-        return 409, {'ContentType':'application/json'}
-    
-    verification_link = f"https://swiss-events.org/verify-email?usrEmail={email}&id={token}"
-    subject = "Verify your email address"
-    body = f"Please click the link below to verify your email address:\n\n{verification_link}"
+        False
+    try:
+        verification_link = f"https://swiss-events.org/verify-email?usrEmail={email}&id={token}"
+        subject = "Verify your email address"
+        body = f"Please click the link below to verify your email address:\n\n{verification_link}"
 
-    msg = Message(subject, recipients=[email], body=body)
-    mail.send(msg)
-
-    return Response({'success':True}), 200, {'ContentType':'application/json'}
+        msg = Message(subject, recipients=[email], body=body)
+        mail.send(msg)
+    except:
+        return False
 
 @app.patch('/user/<id>')
 def patch_user(id):
