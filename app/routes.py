@@ -278,13 +278,14 @@ def post_user():
     db.session.commit()
 
     try:
-        if send_verification_email(new_user.email, new_user.email_token, new_user.id):
-            return Response({'success':True}), 200, {'ContentType':'application/json'}
+        response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
+        if response: 
+            return Response({f"success {response} {app.config.get('MAIL_PASSWORD')} {app.config.get('MAIL_USERNAME')}":True}), 200, {'ContentType':'application/json'}
         else:
-            return Response({'Unsuccess':True}), 500, {'ContentType':'application/json'}
+            return Response({f"Unsuccess - In mail sending, error: {response}":True}), 500, {'ContentType':'application/json'}
     except Exception as e:
         db.session.rollback()
-        return jsonify(e) ,500, {'application/json'}
+        return jsonify(e), 500, {'application/json'}
 
 
 def send_verification_email(email, token, id):
@@ -299,9 +300,8 @@ def send_verification_email(email, token, id):
         msg = Message(subject, recipients=[email], body=body)
         mail.send(msg)
     except Exception as e:
-        print(e)
-        sys.stdout.flush()
-        return False
+        return str(e)
+    return True
 
 @app.patch('/user/<id>')
 def patch_user(id):
