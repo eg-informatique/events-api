@@ -280,18 +280,18 @@ def post_user():
     try:
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
         if response: 
-            return Response({f"success {response} {app.config.get('MAIL_PASSWORD')} {app.config.get('MAIL_USERNAME')}":True}), 200, {'ContentType':'application/json'}
+            return Response({f"success":True}), 200, {'ContentType':'application/json'}
         else:
             return Response({f"Unsuccess - In mail sending, error: {response}":True}), 500, {'ContentType':'application/json'}
     except Exception as e:
         db.session.rollback()
         return Response({f'{e}': True}), 500, {'application/json'}
 
-def send_verification_email(email, token):
+def send_verification_email(email, token, id):
     if AppUser.query.filter(AppUser.id == id).first():
         return False
     try:
-        verification_link = f"https://swiss-events.org/verify-email?usrEmail={email}&id={token}"
+        verification_link = f"https://swiss-events.org/verify-email?usrId={id}&id={token}"
         subject = "Verify Your Email Address"
         
         
