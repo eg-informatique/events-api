@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, Date, JSON, String, Text, ForeignKey, func, inspect
+from sqlalchemy import Column, Integer, DateTime, Date, JSON, String, Text, ForeignKey, Boolean, func, inspect
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from geoalchemy2 import Geometry
@@ -59,6 +59,8 @@ class AppUser(db.Model):
     email = Column(String(64), nullable=False)
     # Password of user => https://youtu.be/8ebIEefhBpM?si=qburaQAyHBxueuzN
     password_hash = Column(String(256), nullable=False)
+    # Email verification status
+    verify = Column(Boolean, nullable=False, default=False)
 
     @property
     def password(self):
