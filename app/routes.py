@@ -408,7 +408,6 @@ def verify_email():
     token = data["token"]
 
     user = AppUser.query.filter(AppUser.id == id).first_or_404()
-    return jsonify(user.id), 200
     if user.email_token == token:
         user.verify = True
         db.session.commit()
