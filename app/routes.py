@@ -285,7 +285,7 @@ def post_user():
             return Response({f"Unsuccess - In mail sending, error: {response}":True}), 500, {'ContentType':'application/json'}
     except Exception as e:
         db.session.rollback()
-        return jsonify(e), 500, {'application/json'}
+        return Response({f'{e}': True}), 500, {'application/json'}
 
 def send_verification_email(email, token):
     if AppUser.query.filter(AppUser.id == id).first():
