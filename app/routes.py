@@ -406,7 +406,7 @@ def verify_email():
     id = request.args.get('id')
     token = request.get_json()
 
-    user = AppUser.query.filter(AppUser.id == id).first()
+    user = AppUser.query.filter(AppUser.id == id).first_or_404()
     return user.email_token
     if user.email_token == token:
         user.verify = True
