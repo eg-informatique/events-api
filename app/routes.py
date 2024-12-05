@@ -70,18 +70,15 @@ def get_events():
 
 @app.post('/event')
 def add_event():
-    # Check for file in request
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
     file = request.files['file']
     data = request.form.to_dict()
     
-    # Validate file and UUID
     if not file or file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
-    # Generate a unique filename
     ext = os.path.splitext(file.filename)[1]  # Get file extension
     unique_filename = f"{os.path.splitext(file.filename)[0]}_{uuid.uuid4().hex}{ext}"
     filename = secure_filename(unique_filename)
@@ -89,7 +86,6 @@ def add_event():
     file.save(file_path)
     file_url = f"https://events-api.org/static/{filename}"
 
-    # Create event object
     try:
         new_event = Event(
             title=data["title"],
@@ -275,35 +271,35 @@ def post_user():
         return Response({'This user already exists'}), 409, {'ContentType':'application/json'}
     
     db.session.add(new_user)
-    db.session.commit()
 
     try:
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
         if response[0]: 
+            db.session.commit()
             return Response({f"success":True}), 200, {'ContentType':'application/json'}
         else:
+            db.session.rollback()
             return Response({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500, {'ContentType':'application/json'}
     except Exception as e:
         db.session.rollback()
         return Response({f'{e}': True}), 500, {'application/json'}
 
+@app.get('send-verification-email/<email>/<token>/<id>')
 def send_verification_email(email, token, id):
     try:
         verification_link = f"https://swiss-events.org/verify-email?id={id}&token={token}"
         subject = "Verify Your Email Address"
         
-        
         with open("/home/tm/events-api/app/email_template.html", "r") as file:
             html_template = file.read()
         html_body = html_template.replace("{{ verification_link }}", verification_link)
-
-        
+ 
         msg = Message(subject, recipients=[email])
         msg.body = "Please verify your email using the following link: " + verification_link
         msg.html = html_body
 
-        
         mail.send(msg)
+
     except Exception as e:
         return [False, str(e)]
     return [True, '123']
@@ -314,7 +310,6 @@ def patch_user(id):
     user = AppUser.query.filter(AppUser.id == id).first_or_404()
     user.first_name = data["first_name"]
     user.last_name = data["last_name"]
-    user.email = data["email"]
     user.password = data["password"]
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}
@@ -334,7 +329,7 @@ def getUserByEmail():
     
     user = AppUser.query.filter(AppUser.email==email).first()
     if user:
-        return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email, 'first_name':user.first_name}})
+        return jsonify({'exists': True, 'user': {'id': user.id, 'email': user.email, 'first_name':user.first_name, 'verify':user.verify}})
     else: 
         return jsonify({'exists': False}), 404
     
@@ -348,6 +343,20 @@ def verify_user():
         return jsonify({'id': user.id, 'email':user.email}), 200
     else: 
         return Response({'authenticated':False}), 401,{'ContentType': 'application/json'}
+
+@app.post('/verify-email')
+def verify_email():
+    data = request.get_json()
+    id = data["id"]
+    token = data["token"]
+
+    user = AppUser.query.filter(AppUser.id == id).first_or_404()
+    if user.email_token == token:
+        user.verify = True
+        db.session.commit()
+        return jsonify('ok'), 202, {'ContentType':'application/json'}
+    else:
+        return Response({'unsuccess':True}), 400, {'ContentType':'application/json'}
 
 
 #------------------------------Event reservation--------------------------------------
@@ -401,17 +410,3 @@ def get_nb_tickets(eventId, usrId):
     nb_tickets = reservation.toDict().get("nb_tickets")
     return jsonify(nb_tickets), 200
  
-@app.post('/verify-email')
-def verify_email():
-    data = request.get_json()
-    id = data["id"]
-    token = data["token"]
-
-    user = AppUser.query.filter(AppUser.id == id).first_or_404()
-    if user.email_token == token:
-        user.verify = True
-        db.session.commit()
-        return jsonify('ok'), 202, {'ContentType':'application/json'}
-    else:
-        return Response({'unsuccess':True}), 400, {'ContentType':'application/json'}
-
