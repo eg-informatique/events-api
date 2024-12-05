@@ -306,7 +306,7 @@ def send_verification_email(email, token, id):
 @app.get('/send-verification-email')
 def send_to_app_verification_email():
     email = request.args.get("email")
-    user = AppUser.query.filter(AppUser.email == email).first()
+    user = AppUser.query.filter(AppUser.email == str(email)).first()
     id = user.id
     email_token = user.email_token
     try:
