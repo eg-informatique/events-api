@@ -284,7 +284,7 @@ def post_user():
         db.session.rollback()
         return Response({f'{e}': True}), 500, {'application/json'}
 
-@app.get('send-verification-email/<email>/<token>/<id>')
+@app.get('/send-verification-email/<email>/<token>/<id>')
 def send_verification_email(email, token, id):
     try:
         verification_link = f"https://swiss-events.org/verify-email?id={id}&token={token}"
