@@ -284,7 +284,6 @@ def post_user():
         db.session.rollback()
         return Response({f'{e}': True}), 500, {'application/json'}
 
-@app.get('/send-verification-email/<email>/<token>/<id>')
 def send_verification_email(email, token, id):
     try:
         verification_link = f"https://swiss-events.org/verify-email?id={id}&token={token}"
@@ -303,6 +302,23 @@ def send_verification_email(email, token, id):
     except Exception as e:
         return [False, str(e)]
     return [True, '123']
+
+@app.get('/send-verification-email')
+def send_to_app_verification_email():
+    email = request.args.get("email")
+    user = AppUser.query.filter(AppUser.email == email).first()
+    id = user.id
+    email_token = user.email_token
+    try:
+        response = send_verification_email(email, email_token, id)
+        if response[0]: 
+            return Response({f"success":True}), 200, {'ContentType':'application/json'}
+        else:
+            return Response({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500, {'ContentType':'application/json'}
+    except Exception as e:
+        db.session.rollback()
+        return Response({f'{e}': True}), 500, {'application/json'}
+    
 
 @app.patch('/user/<id>')
 def patch_user(id):
