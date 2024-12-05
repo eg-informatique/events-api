@@ -384,7 +384,7 @@ def reserve_event(eventId, usrId, nb_tickets):
 def edit_reservation(eventId, usrId, nb_tickets):
     reservation = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId, Events_AppUsers.app_user == usrId)).first_or_404()
     reservation.nb_tickets = nb_tickets
-    if reservation.nb_tickets - nb_tickets == 0:
+    if int(reservation.nb_tickets) - int(nb_tickets) == 0:
         db.session.delete(reservation)
     db.session.commit()
     return Response({'success':True}), 202, {'ContentType':'application/json'}
