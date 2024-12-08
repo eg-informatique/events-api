@@ -269,7 +269,6 @@ def post_user():
         return jsonify({"error": "Email already used"}), 409
     
     db.session.add(new_user)
-    db.session.commit()
     try:
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
         if response[0]: 
