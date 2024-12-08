@@ -269,16 +269,18 @@ def post_user():
         return jsonify({"error": "Email already used"}), 409
     
     db.session.add(new_user)
+    db.session.commit()
     try:
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
         if response[0]: 
-            db.session.commit()
             return jsonify({f"success":True}), 200
         else:
-            db.session.rollback()
+            db.session.delete(new_user)
+            db.session.commit()
             return jsonify({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500
     except Exception as e:
-        db.session.rollback()
+        db.session.delete(new_user)
+        db.session.commit()
         return jsonify({f'{e}': True}), 500
 
 def send_verification_email(email, token, id):
