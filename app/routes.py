@@ -435,7 +435,7 @@ def get_registred_pdf():
     reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == event_id).all()
     if len(reservationList) == 0:
         return jsonify({'exists': False}), 404
-    registredList = [i.toDict().get("event") for i in reservationList]
+    registredList = [i.toDict().get("app_user") for i in reservationList]
     
     ticket_tot = sum(i.nb_tickets for i in reservationList)
     
@@ -471,7 +471,7 @@ def get_registred_pdf():
         pdf.cell(50, 10, user.first_name, border=1, fill=True)
         pdf.cell(50, 10, user.last_name, border=1, fill=True)
         pdf.cell(70, 10, user.email, border=1, fill=True)
-        pdf.cell(20, 10, str(reg.tickets), border=1, fill=True)
+        pdf.cell(20, 10, str(registration.nb_tickets), border=1, fill=True)
         pdf.ln()
         alternating_color = not alternating_color
 
