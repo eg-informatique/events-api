@@ -442,7 +442,7 @@ def get_registred_pdf():
     pdf = FPDF()
     pdf.add_page()
 
-    logo_path = 'home/tm/events-api/app/logo.png'
+    logo_path = '/home/tm/events-api/app/logo.png'
     if os.path.exists(logo_path):
         pdf.image(logo_path, x=10, y=8, w=30)
 
