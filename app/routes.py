@@ -314,7 +314,6 @@ def send_to_app_verification_email():
         else:
             return Response({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500, {'ContentType':'application/json'}
     except Exception as e:
-        db.session.rollback()
         return Response({f'{e}': True}), 500, {'application/json'}
     
 
