@@ -466,7 +466,7 @@ def get_registred_pdf():
 
     for reg in registredList:
         registration = next((i for i in reservationList if i.app_user == reg), None)
-        user = AppUser.query.filter(AppUser.id == reg)
+        user = AppUser.query.filter(AppUser.id == reg).first()
         pdf.set_fill_color(245 if alternating_color else 255)
         pdf.cell(50, 10, user.first_name, border=1, fill=True)
         pdf.cell(50, 10, user.last_name, border=1, fill=True)
