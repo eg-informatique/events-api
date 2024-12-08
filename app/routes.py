@@ -448,7 +448,7 @@ def get_registred_pdf():
 
     # Titre principal
     pdf.set_font('Arial', 'B', 14)
-    pdf.cell(200, 10, f"Registered List for {event.name}", ln=True, align='C')
+    pdf.cell(200, 10, f"Registered List for {event.title}", ln=True, align='C')
     pdf.set_font('Arial', '', 12)
     pdf.cell(200, 10, f"Total Tickets: {ticket_tot}", ln=True, align='C')
     pdf.ln(20)
