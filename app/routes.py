@@ -266,7 +266,7 @@ def post_user():
                       )
     
     if len(AppUser.query.filter(AppUser.email == data["email"]).all()) > 0:
-        return Response({'Email already used': True}), 409, {'ContentType':'application/json'}
+        return jsonify({"error": "Email already used"}), 409
     
     db.session.add(new_user)
     db.session.commit()
@@ -274,13 +274,13 @@ def post_user():
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
         if response[0]: 
             db.session.commit()
-            return Response({f"success":True}), 200, {'ContentType':'application/json'}
+            return jsonify({f"success":True}), 200
         else:
             db.session.rollback()
-            return Response({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500, {'ContentType':'application/json'}
+            return jsonify({f"Unsuccess - In mail sending, error: {response[1]}":True}), 500
     except Exception as e:
         db.session.rollback()
-        return Response({f'{e}': True}), 500, {'application/json'}
+        return jsonify({f'{e}': True}), 500
 
 def send_verification_email(email, token, id):
     try:
