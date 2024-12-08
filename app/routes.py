@@ -266,12 +266,10 @@ def post_user():
                       )
     
     if len(AppUser.query.filter(AppUser.email == data["email"]).all()) > 0:
-        return Response({'Email already used'}), 409, {'ContentType':'application/json'}
-    if len(AppUser.query.filter(AppUser.first_name == data["first_name"]).all()) > 0 and len(AppUser.query.filter(AppUser.last_name == data["last_name"]).all()):
-        return Response({'This user already exists'}), 409, {'ContentType':'application/json'}
+        return Response({'Email already used': True}), 409, {'ContentType':'application/json'}
     
     db.session.add(new_user)
-
+    db.session.commit()
     try:
         response = send_verification_email(new_user.email, new_user.email_token, new_user.id)
         if response[0]: 
@@ -428,3 +426,8 @@ def get_nb_tickets(eventId, usrId):
     nb_tickets = reservation.toDict().get("nb_tickets")
     return jsonify(nb_tickets), 200
  
+#--------------------------PDF------------------------------
+@app.get('/gistred-events-pdf')
+def get_registred_pdf():
+    event_id = request.args.get('event_id')
+    
