@@ -379,7 +379,10 @@ def verify_email():
 
 @app.post('/reserve/<eventId>/<usrId>/<nb_tickets>')
 def reserve_event(eventId, usrId, nb_tickets):
-    is_reserve_exists = Events_AppUsers.query.filter(and_(Events_AppUsers.event == eventId, Events_AppUsers.app_user == usrId)).first()
+    reservations = Events_AppUsers.query
+    reservations = reservations.filter(Events_AppUsers.app_user == usrId)
+    reservations = reservations.filter(Events_AppUsers.event == eventId)
+    is_reserve_exists = reservations.first()
     if is_reserve_exists:
         is_reserve_exists.nb_tickets += int(nb_tickets)
         db.session.commit()
