@@ -432,7 +432,7 @@ def get_nb_tickets(eventId, usrId):
 def get_registred_pdf():
     event_id = request.args.get('event_id')
     event = Event.query.filter(Event.id == event_id).first()
-    reservationList = Events_AppUsers.query.filter(Events_AppUsers.app_user == event_id).all()
+    reservationList = Events_AppUsers.query.filter(Events_AppUsers.event == event_id).all()
     if len(reservationList) == 0:
         return jsonify({'exists': False}), 404
     registredList = [i.toDict().get("event") for i in reservationList]
