@@ -1,8 +1,9 @@
 from app import app
 from datetime import datetime
-from flask import Flask, Response, request, render_template, redirect, jsonify, abort, json
+from flask import Flask, Response, request, render_template, redirect, jsonify, abort, json, send_file
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
+from fpdf import FPDF
 import os
 import uuid
 import jwt
@@ -427,7 +428,54 @@ def get_nb_tickets(eventId, usrId):
     return jsonify(nb_tickets), 200
  
 #--------------------------PDF------------------------------
-@app.get('/gistred-events-pdf')
+@app.get('/registred-events-pdf')
 def get_registred_pdf():
     event_id = request.args.get('event_id')
+    event = Event.query.filter(Event.id == event_id).first()
+    reservationList = Events_AppUsers.query.filter(Events_AppUsers.app_user == event_id).all()
+    if len(reservationList) == 0:
+        return jsonify({'exists': False}), 404
+    registredList = [i.toDict().get("event") for i in reservationList]
     
+    ticket_tot = sum(i.nb_tickets for i in reservationList)
+    
+    pdf = FPDF()
+    pdf.add_page()
+
+    logo_path = '~/events-api/app/logo.png'
+    if os.path.exists(logo_path):
+        pdf.image(logo_path, x=10, y=8, w=30)
+
+    # Titre principal
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(200, 10, f"Registered List for {event.name}", ln=True, align='C')
+    pdf.set_font('Arial', '', 12)
+    pdf.cell(200, 10, f"Total Tickets: {ticket_tot}", ln=True, align='C')
+    pdf.ln(20)
+
+    # Tableau des inscrits
+    pdf.set_font('Arial', '', 10)
+    pdf.set_fill_color(200, 220, 255)
+    alternating_color = False
+
+    pdf.cell(50, 10, "First Name", border=1, align='C', fill=True)
+    pdf.cell(50, 10, "Last Name", border=1, align='C', fill=True)
+    pdf.cell(70, 10, "Email", border=1, align='C', fill=True)
+    pdf.cell(20, 10, "Tickets", border=1, align='C', fill=True)
+    pdf.ln()
+
+    for reg in registredList:
+        registration = next((i for i in reservationList if i.app_user == reg), None)
+        user = AppUser.query.filter(AppUser.id == reg)
+        pdf.set_fill_color(245 if alternating_color else 255)
+        pdf.cell(50, 10, user.first_name, border=1, fill=True)
+        pdf.cell(50, 10, user.last_name, border=1, fill=True)
+        pdf.cell(70, 10, user.email, border=1, fill=True)
+        pdf.cell(20, 10, str(reg.tickets), border=1, fill=True)
+        pdf.ln()
+        alternating_color = not alternating_color
+
+    pdf_path = f"/tmp/{event.name.replace(' ', '_')}_registered_list.pdf"
+    pdf.output(pdf_path)
+
+    return send_file(pdf_path, as_attachment=True, download_name=f"{event.name}_registered_list.pdf")
