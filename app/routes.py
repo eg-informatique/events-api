@@ -475,7 +475,7 @@ def get_registred_pdf():
         pdf.ln()
         alternating_color = not alternating_color
 
-    pdf_path = f"/tmp/{event.name.replace(' ', '_')}_registered_list.pdf"
+    pdf_path = f"/tmp/{event.title.replace(' ', '_')}_registered_list.pdf"
     pdf.output(pdf_path)
 
     return send_file(pdf_path, as_attachment=True, download_name=f"{event.name}_registered_list.pdf")
