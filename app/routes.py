@@ -481,4 +481,4 @@ def get_registred_pdf():
     pdf_path = f"/tmp/{event.title.replace(' ', '_')}_registered_list.pdf"
     pdf.output(pdf_path)
 
-    return send_file(pdf_path, as_attachment=True, download_name=f"{event.title}_registered_list.pdf")
+    return send_file(pdf_path, as_attachment=True, download_name=f"{event.title}-registered-list.pdf")
